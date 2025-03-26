@@ -1,0 +1,10 @@
+node_modules/
+.idea/
+*.tgz
+
+# RIA license
+**/luciadria_*.txt
+
+# production
+**/dist/
+**/build/
