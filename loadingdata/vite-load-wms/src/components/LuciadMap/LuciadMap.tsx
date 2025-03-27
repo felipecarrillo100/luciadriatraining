@@ -28,7 +28,7 @@ export const LuciadMap: React.FC = () => {
 }
 
 
-function LoadLayers(nativeMap: WebGLMap) {
+function LoadLayers(map: WebGLMap) {
     const wmsUrl = "https://sampleservices.luciad.com/wms";
 
     const layerImageryName = "4ceea49c-3e7c-4e2d-973d-c608fb2fb07e";
@@ -46,22 +46,25 @@ function LoadLayers(nativeMap: WebGLMap) {
         version: WMSVersion.V130
     })
     const layer = new WMSTileSetLayer(model1, {label: "Satellite Images"});
-    nativeMap.layerTree.addChild(layer);
+    map.layerTree.addChild(layer);
 
     // Method 2: Create using createFromCapabilities
     // Performs: wmsUrl?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0
     WMSCapabilities.fromURL(wmsUrl).then((capabilities: WMSCapabilities) => {
-        console.log(capabilities.layers);
+        // Creates the model with the capabilities retrieved:
         const model = WMSTileSetModel.createFromCapabilities(capabilities, layersCities);
+        // Create the layer as usual
         const layer = new WMSTileSetLayer(model, {label: "States"});
-        nativeMap.layerTree.addChild(layer);
-        if (model.bounds) nativeMap.mapNavigator.fit({bounds: model.bounds, animate: true});
+        // Create the layer as usual
+        map.layerTree.addChild(layer);
+        // Zoom the map to fit the bounds of this layer
+        if (model.bounds) map.mapNavigator.fit({bounds: model.bounds, animate: true});
     });
 
     // Method 3: createFromURL (GetCapabilities is called behind the scenes)
     WMSTileSetModel.createFromURL(wmsUrl, layersRivers, {}).then((model: WMSTileSetModel) => {
         const layer = new WMSTileSetLayer(model, {label: "Rivers"});
-        nativeMap.layerTree.addChild(layer);
+        map.layerTree.addChild(layer);
     });
 }
 

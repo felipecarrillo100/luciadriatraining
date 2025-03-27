@@ -1,54 +1,82 @@
-# React + TypeScript + Vite
+## Adding a WMS Layer to LuciadRIA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The OGC WMS (Web Map Service) is a standard protocol developed by the Open Geospatial Consortium (OGC) for delivering georeferenced map images over the internet. It allows users to request map images from a server using parameters such as geographic coordinates, image format, and layer visibility, facilitating dynamic map visualization and seamless integration into web applications.
 
-Currently, two official plugins are available:
+To add a WMS layer to a LuciadRIA map, follow these steps:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **Create a Map**: Initialize your map instance.
+2. **Create a Model**: Use the `WMSTileSetModel` to access WMS data.
+3. **Assign the Model to a Layer**: Use the `WMSTileSetLayer` to visually represent the model.
+4. **Insert the Layer into the Map**: Add the layer to the map's `layerTree`.
 
-## Expanding the ESLint configuration
+The LuciadRIA API provides robust models and layers for accessing and displaying WMS data:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Model**: `WMSTileSetModel` handles WMS data.
+- **Layer**: `WMSTileSetLayer` visualizes the model on the map.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+For detailed documentation, refer to:
+
+- [WMSTileSetModel Documentation](https://dev.luciad.com/portal/productDocumentation/LuciadRIA/docs/reference/LuciadRIA/modules/_luciad_ria_model_tileset_WMSTileSetModel.html)
+- [WMSTileSetLayer Documentation](https://dev.luciad.com/portal/productDocumentation/LuciadRIA/docs/reference/LuciadRIA/modules/_luciad_ria_view_tileset_WMSTileSetLayer.html)
+
+These resources provide specific guidance on implementing WMS layers in your LuciadRIA application.
+
+### Method 1: Adding a WMS Layer Using the Standard Pattern
+
+To add a WMS layer using the standard approach:
+
+```typescript
+const wmsUrl = "URL_OF_WMS_SERVICE";
+
+// Create the model with required options
+const model1 = new WMSTileSetModel({
+    getMapRoot: wmsUrl,
+    layers: [layerImageryName],
+    reference: getReference("EPSG:3857"),
+    imageFormat: "image/png",
+    styles: [],
+    transparent: true,
+    version: WMSVersion.V130
+});
+
+// Create the layer and set the desired label
+const layer = new WMSTileSetLayer(model1, { label: "Satellite Images" });
+
+// Insert the layer into the map
+map.layerTree.addChild(layer);
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The `WMSTileSetModel` constructor requires several parameters, which can make the process complex. To simplify model creation, LuciadRIA API offers alternative methods:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Method 2: Using `WMSTileSetModel.createFromCapabilities`
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+The LuciadRIA API allows you to query the WMS server for information about layers and configurations using `WMSCapabilities`.
+
+```typescript
+// Perform: wmsUrl?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0
+WMSCapabilities.fromURL(wmsUrl).then((capabilities: WMSCapabilities) => {
+    // Create the model with retrieved capabilities; `layersArray` is the list of desired layers
+    const model = WMSTileSetModel.createFromCapabilities(capabilities, layersArray);
+    // Create the layer as usual
+    const layer = new WMSTileSetLayer(model, { label: "States" });
+    // Add the layer to the map
+    map.layerTree.addChild(layer);
+    // Zoom the map to fit the bounds of this layer
+    if (model.bounds) map.mapNavigator.fit({ bounds: model.bounds, animate: true });
+});
 ```
+
+### Method 3: Using `WMSTileSetModel.createFromURL`
+
+A more efficient approach is to use:
+
+```typescript
+// Create the model with createFromURL; the GetCapabilities is called behind the scenes, `layersRivers` is the list of desired layers
+WMSTileSetModel.createFromURL(wmsUrl, layersRivers, {}).then((model: WMSTileSetModel) => {
+    // Using the model returned in the promise:
+    const layer = new WMSTileSetLayer(model, { label: "Rivers" });
+    map.layerTree.addChild(layer);
+});
+```
+
+This method streamlines the process by directly creating the model from the URL and specified layers.
