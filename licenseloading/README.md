@@ -69,7 +69,7 @@ LicenseLoader().then(({ YOURMAINMODULE }) => {
 
 If you're unsure how to implement this, refer to the detailed examples provided for CRA and Angular.
 
-## Method 3: Vite with React
+## Method 3: Applies to Vite with React
 
 This method is tailored for React with Vite, which does not use Webpack. Methods 1 and 2 will not apply here.
 
