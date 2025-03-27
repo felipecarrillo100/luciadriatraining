@@ -8,9 +8,9 @@ import {WFSFeatureStore} from "@luciad/ria/model/store/WFSFeatureStore.js";
 import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel.js";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer.js";
 import {WFSCapabilities} from "@luciad/ria/model/capabilities/WFSCapabilities.js";
-import {StatesPainter} from "../../modules/luciad/StatesPainter.ts";
-import {CitiesPainter} from "../../modules/luciad/CitiesPainter.ts";
-import {RiversPainter} from "../../modules/luciad/RiversPainter.ts";
+import {StatesPainter} from "../../modules/luciad/painters/StatesPainter.ts";
+import {CitiesPainter} from "../../modules/luciad/painters/CitiesPainter.ts";
+import {RiversPainter} from "../../modules/luciad/painters/RiversPainter.ts";
 
 
 export const LuciadMap: React.FC = () => {

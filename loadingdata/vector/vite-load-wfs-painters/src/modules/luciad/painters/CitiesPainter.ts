@@ -8,7 +8,7 @@ import {Map} from "@luciad/ria/view/Map.js";
 import {DrapeTarget} from "@luciad/ria/view/style/DrapeTarget.js";
 import {IconStyle} from "@luciad/ria/view/style/IconStyle.js";
 
-import * as IconFactory from "../utils/IconFactory.ts"
+import * as IconFactory from "../../utils/IconFactory.ts"
 import {PointLabelPosition} from "@luciad/ria/view/style/PointLabelPosition.js";
 
 const normalStyle:  IconStyle = {
