@@ -16,11 +16,12 @@ To develop a custom painter, extend the `FeaturePainter` class and implement the
 ```typescript
 class YourCustomPainter extends FeaturePainter {
     paintBody(geoCanvas: GeoCanvas, feature: Feature, shape: Shape, layer: Layer, map: Map, paintState: PaintState) {
-        // Define the style for stroke and fill
+        // Your custom code to draw the shape's body goes here...
         geoCanvas.drawShape(shape, style);
     }
 
     paintLabel(labelCanvas: LabelCanvas, feature: Feature, shape: Shape, layer: Layer, map: Map, paintState: PaintState) {
+      // Your custom code to draw the shape's labe goes here...
         const name = feature.properties.STATE_NAME;
         const label = `<div class="painter_state_label"><span>${name}</span></div>`;
         labelCanvas.drawLabel(label, shape, {});
@@ -28,8 +29,8 @@ class YourCustomPainter extends FeaturePainter {
 }
 ```
 
-- `paintBody`: Renders the feature's shape on the map.
-- `paintLabel`: Renders a label at the feature's location.
+- `FeaturePainter.paintBody`: Renders the feature's shape on the map.
+- `FeaturePainter.paintLabel`: Renders a label at the feature's location.
 
 ### Drawing Methods
 
