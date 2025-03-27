@@ -7,6 +7,7 @@ import {WMSTileSetModel} from "@luciad/ria/model/tileset/WMSTileSetModel.js";
 import {WFSFeatureStore} from "@luciad/ria/model/store/WFSFeatureStore.js";
 import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel.js";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer.js";
+import {WFSCapabilities} from "@luciad/ria/model/capabilities/WFSCapabilities.js";
 
 
 export const LuciadMap: React.FC = () => {
@@ -39,11 +40,13 @@ function LoadLayers(map: WebGLMap) {
         map.layerTree.addChild(layer);
 
         // Once whe WMS layer has been loaded Add the WFS layer
-        loadWFS(map);
+        loadWFS_States(map);
+        loadWFS_Cities(map);
     });
 }
 
-function loadWFS(map: WebGLMap) {
+// Using  WFSFeatureStore.createFromUR
+function loadWFS_States(map: WebGLMap) {
     const wfsUrl = "https://sampleservices.luciad.com/wfs";
     WFSFeatureStore.createFromURL(wfsUrl, "ns4:t_states__c__1213").then((store: WFSFeatureStore) => {
         //Create a model for the store
@@ -59,5 +62,26 @@ function loadWFS(map: WebGLMap) {
         if (layer.bounds) map.mapNavigator.fit({bounds: layer.bounds});
     });
 }
+
+
+// Using WFSFeatureStore.createFromCapabilities
+function loadWFS_Cities(map: WebGLMap) {
+    const wfsUrl = "https://sampleservices.luciad.com/wfs";
+// Perform: wfsUrl?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.3.0
+    WFSCapabilities.fromURL(wfsUrl)
+        .then((capabilities: WFSCapabilities) => {
+            // Create a store using the capabilities
+            const store = WFSFeatureStore.createFromCapabilities(capabilities, "ns4:t_cities__c__1214");
+            // Create a model for the store
+            const model = new FeatureModel(store);
+            // Create a layer for the model
+            const layer = new FeatureLayer(model, {
+                label: "Cities",
+                selectable: true,
+                hoverable: true
+            });
+            // Add the model to the map
+            map.layerTree.addChild(layer);
+        });}
 
 
