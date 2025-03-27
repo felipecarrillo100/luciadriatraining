@@ -1,77 +1,79 @@
-# LuciadRIA License loading
+# Loading the LuciadRIA License
 
-LuciadRIA license is required to  use the LuciadRIA software in a web applications.
-A missing license will result on a water mark and constant alert popups on the screen.
+To utilize LuciadRIA in web applications, a valid license is required. Without it, you'll encounter a watermark and frequent alert pop-ups on your screen.
 
-To deploy the license there are several methods.  You can take the one more suitable for your applications requirements
+There are multiple methods for deploying the license, allowing you to choose the one that best fits your application's requirements.
 
-The LuciadRIA documentation describes the following method:
+The LuciadRIA documentation outlines a method available here:
 
-https://dev.luciad.com/portal/productDocumentation/LuciadRIA/docs/articles/tutorial/getting_started/deployment.html#_using_your_deployment_license_in_production
+[LuciadRIA Deployment Guide](https://dev.luciad.com/portal/productDocumentation/LuciadRIA/docs/articles/tutorial/getting_started/deployment.html#_using_your_deployment_license_in_production)
 
-Nevertheless, this method assumes you have full control of the webpack configuration
-which is not always the case, more over Vite does't even use webpack. 
+However, this method assumes full control over the Webpack configuration, which may not always be the case. Furthermore, Vite does not use Webpack at all.
 
-When you use frameworks such as:
+When working with frameworks such as:
 
 - Create React App (CRA)
 - Angular CLI
 - Vite
 
-The scripts of the framework configure webpack for you and webpack configurations becomes  a blackbox for you where you have bo access or limited access to customization.
-Or in the case of Vite, it doesn't use Webpack at all.
+These frameworks often handle Webpack configuration internally, limiting your ability to customize it. In the case of Vite, Webpack is not used.
 
-This examples, in this document, show you how you can overcome this limitations.
+This document provides examples to help you navigate these limitations.
 
-## Method 1
-Applies to: CRA and ANGULAR
-The method one is the easiest and more straight forward. Your license will be loaded a s resource loaded at tun time when the application is loaded.
-For this you need to specify the location of the license in the `<head>` section of the `index.html` of your application.
+## Method 1: Applies to CRA and Angular
+
+This straightforward method involves loading your license as a resource at runtime when the application initializes. Specify the license's location in the `<head>` section of your application's `index.html`:
 
 ```html
-    <script>window.__LUCIAD_ROOT__="./luciad"</script>
+<script>window.__LUCIAD_ROOT__="./luciad"</script>
 ```
 
-The path is relative to the location of `index.html`, and your need to place your license at:
-```html
+Ensure your license is placed at the following path relative to `index.html`:
+
+```
 ./luciad/license/luciadria_development.txt
 ```
 
-## Method 2
-Applies to: CRA and ANGULAR
+## Method 2: Applies to CRA and Angular
 
-This method will import the license during compile/build. The license will be loaded as a text string and then configured usig the LuciadRIA API
-```html
-    setLicenseText(txt);
+This method imports the license during the compile/build process. The license is loaded as a text string and configured using the LuciadRIA API:
+
+```typescript
+setLicenseText(txt);
 ```
-Since the setLicenseText must be loaded before any other LuciadRIA code this forces you to use a promise. You will only import the main code once the promise is resolved.
 
-You create a LicenseLoader.ts
-```Typescript
-import {setLicenseText} from "@luciad/ria/util/License.js";
+Since `setLicenseText` must be called before any other LuciadRIA code, you need to use a promise to ensure the main code is imported only after the license is loaded.
 
-// Import your licese as a string,  you may need to add a loader for this:
+Create a `LicenseLoader.ts`:
+
+```typescript
+import { setLicenseText } from "@luciad/ria/util/License.js";
+
+// Import your license as a string; you may need to add a loader for this:
 import txt from './luciadria_development.txt';
 
 export default function LicenseLoader() {
     setLicenseText(txt);
-    // Maon module is now imported after loading the license
+    // Main module is now imported after loading the license
     return import('../pathto/YOURMAINMODULE');
 }
 ```
-And not youi can use the LicenseLoader
-```Typescript
-// @ts-ignore
-LicenseLoader().then(({YOURMAINMODULE}) => {
-    // Use YOURMAINCOMPONENT HERE
+
+Then use the `LicenseLoader`:
+
+```typescript
+LicenseLoader().then(({ YOURMAINMODULE }) => {
+    // MAke us of YOURMAINCOMPONENT here
 });
 ```
-Don't worry if you don't undertand how to do it at this moment.  Look at the detailed examples provided for CRA and Angular
 
-## Method 3
-This method only applies to React Vite. Vite for React doesn't use Webpack and Method 1 and Method 2 will not work.
+If you're unsure how to implement this, refer to the detailed examples provided for CRA and Angular.
 
-For this methods you will simply need to define a new entry point in the `index.html`
+## Method 3: Vite with React
+
+This method is tailored for React with Vite, which does not use Webpack. Methods 1 and 2 will not apply here.
+
+Define a new entry point `LicenseLoader.ts`  in `index.html`:
 
 ```html
 <!doctype html>
@@ -84,21 +86,22 @@ For this methods you will simply need to define a new entry point in the `index.
   </head>
   <body>
     <div id="root"></div>
-    <!-- License is Loaded here in a separate entry! -->
+    <!-- License is loaded here in a separate entry! -->
     <script type="module" src="/src/license/LicenseLoader.ts"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
 ```
 
-Then you simply load the license:
-```Typescript
-import {setLicenseText} from "@luciad/ria/util/License.js";
+Then, load the license:
 
-// You can use a loader for this or you can add custom code to vite.config.js
+```typescript
+import { setLicenseText } from "@luciad/ria/util/License.js";
+
+// Use a loader library or add custom code to vite.config.js to load the string as a string
 import txt from './luciadria_development.txt?raw-txt';
 
 setLicenseText(txt);
 ```
-Because the LicenseLoader is loaded first in the `index.html` there is not need of additional changes.
 
+Since `LicenseLoader.ts` is loaded before `main.tsx` in `index.html`, the data will be loaded in the correct sequence without additional considerations.
