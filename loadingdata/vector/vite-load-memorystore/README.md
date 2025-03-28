@@ -2,7 +2,11 @@
 
 In previous exercises, we have worked with read-only FeatureLayers. However, it's often necessary to edit a feature layer by adding new features, deleting existing ones, or updating current features.
 
-To enable these operations, we need a store that supports write operations such as `add`, `put`, and `remove`. The `MemoryStore` is an excellent example of such a store. You can find more information [here](https://dev.luciad.com/portal/productDocumentation/LuciadRIA/docs/reference/LuciadRIA/classes/_luciad_ria_model_store_MemoryStore.MemoryStore.html).
+To enable these operations, we need a store that supports write operations such as `add`, `put`, and `remove`. 
+
+The `MemoryStore` is an excellent example of such a store. You can find more information at
+
+[MemoryStore Documentation](https://dev.luciad.com/portal/productDocumentation/LuciadRIA/docs/reference/LuciadRIA/classes/_luciad_ria_model_store_MemoryStore.MemoryStore.html).
 
 Additionally, we need a `Controller` capable of editing the features we wish to modify.
 
@@ -81,11 +85,14 @@ In this example, we will assign the `EditController` whenever a single individua
 Here is how it can be implemented:
 
 ```typescript
+// This code will be called every time the selection change in the map
 map.on("SelectionChanged", () => {
   const selection = map.selectedObjects;
+  // Verify only one layer / one feature is selected
   if (selection.length === 1 && selection[0].layer === layer) {
     if (selection[0].selected.length === 1) {
       const feature = selection[0].selected[0];
+      // Set the Edit controller to edit the selected feature
       const editController = new EditController(layer, feature, {
         finishOnSingleClick: true
       });

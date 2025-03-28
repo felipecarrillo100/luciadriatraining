@@ -55,18 +55,19 @@ function createShapeInMap(map: WebGLMap, shapeType: ShapeType) {
             layer,
         });
 
-
+    // This code will be called every time the selection change in the map
     map.on("SelectionChanged", () => {
-            const selection = map.selectedObjects;
-            if (selection.length === 1 && selection[0].layer === layer) {
-                if (selection[0].selected.length === 1) {
-                    const feature = selection[0].selected[0];
-                    const editController = new EditController(layer, feature, {
-                        finishOnSingleClick: true
-                    });
-                    map.controller = editController;
-                }
+        const selection = map.selectedObjects;
+        // Verify only one layer / one feature is selected
+        if (selection.length === 1 && selection[0].layer === layer) {
+            if (selection[0].selected.length === 1) {
+                const feature = selection[0].selected[0];
+                const editController = new EditController(layer, feature, {
+                    finishOnSingleClick: true
+                });
+                map.controller = editController;
             }
+        }
     });
 }
 
