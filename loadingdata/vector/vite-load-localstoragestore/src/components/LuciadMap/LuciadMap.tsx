@@ -6,7 +6,6 @@ import {WMSTileSetModel} from "@luciad/ria/model/tileset/WMSTileSetModel.js";
 import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel.js";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer.js";
 import {ShapeType} from "@luciad/ria/shape/ShapeType.js";
-import {MemoryStore} from "@luciad/ria/model/store/MemoryStore.js";
 import {CreateFeatureInLayerController} from "../../modules/luciad/controllers/CreateFeatureInLayerController.ts";
 import {EditController} from "@luciad/ria/view/controller/EditController.js";
 import "./LuciadMap.css";
