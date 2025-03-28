@@ -25,6 +25,7 @@ const selectedStyle:  IconStyle = {
 }
 
 export class ThaterPainter extends FeaturePainter {
+    // @ts-ignore
     paintBody(geoCanvas: GeoCanvas, feature: Feature, shape: Shape, layer: Layer, map: Map, paintState: PaintState) {
         const style =
             paintState.selected ?
@@ -37,6 +38,7 @@ export class ThaterPainter extends FeaturePainter {
         geoCanvas.drawIcon(shape, style);
     }
 
+    // @ts-ignore
     paintLabel(labelCanvas: LabelCanvas, feature: Feature, shape: Shape, layer: Layer, map: Map, paintState: PaintState) {
         const label = !paintState.selected
             ? `<div class="theater_city_label"><span>${feature.properties.naam}</span></div>`
