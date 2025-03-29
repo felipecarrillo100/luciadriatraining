@@ -63,11 +63,8 @@ function addMeshLayer(map: WebGLMap) {
         //Add the model to the map
         map.layerTree.addChild(layer);
 
-        map.mapNavigator.fit({
-            bounds: layer.bounds,
-            animate: true
-        });
-
+        // Zoom to the layer bounds
+        if (layer.bounds) map.mapNavigator.fit({ bounds: layer.bounds, animate: true});
     });
 
 }
