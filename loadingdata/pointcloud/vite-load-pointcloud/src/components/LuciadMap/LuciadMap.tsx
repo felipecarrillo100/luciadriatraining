@@ -54,6 +54,7 @@ function LoadLayers(map: WebGLMap) {
 function addMeshLayer(map: WebGLMap) {
     const url = "https://datamonster.myvr.net/mMap/data/pointcloud/APR/SanFrancisco/tree.hspc"
 
+    // Create the model
     HSPCTilesModel.create(url, {}).then((model:HSPCTilesModel)=>{
         //Create a layer for the model
         const layer = new TileSet3DLayer(model, {
@@ -63,11 +64,8 @@ function addMeshLayer(map: WebGLMap) {
         //Add the model to the map
         map.layerTree.addChild(layer);
 
-        map.mapNavigator.fit({
-            bounds: layer.bounds,
-            animate: true
-        });
-
+        // Zoom to the point cloud location
+        map.mapNavigator.fit({ bounds: layer.bounds, animate: true });
     });
 
 }
