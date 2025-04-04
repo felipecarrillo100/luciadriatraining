@@ -11,7 +11,6 @@ import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel.js";
 import {FusionPanoramaModel} from "@luciad/ria/model/tileset/FusionPanoramaModel.js";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer.js";
 import {PanoramaFeaturePainter} from "../../modules/luciad/painters/PanoramaFeaturePainter.ts";
-import {TheaterPainter} from "../../modules/luciad/painters/TheaterPainter.ts";
 
 export const LuciadMap: React.FC = () => {
     const divElement = useRef(null as null | HTMLDivElement);

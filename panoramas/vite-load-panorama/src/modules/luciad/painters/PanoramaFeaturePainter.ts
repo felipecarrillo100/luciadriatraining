@@ -32,7 +32,6 @@ import {getUnitOfMeasure} from "@luciad/ria/uom/UnitOfMeasureRegistry.js";
 import {GeoCanvas} from "@luciad/ria/view/style/GeoCanvas";
 import {Handle} from "@luciad/ria/util/Evented";
 import {PanoIcon} from "./PanoIcon.ts";
-import {createHexagon} from "../utils/IconFactory.ts";
 import {DrapeTarget} from "@luciad/ria/view/style/DrapeTarget";
 
 export interface PanoramaFeaturePainterConstructorOptions {
