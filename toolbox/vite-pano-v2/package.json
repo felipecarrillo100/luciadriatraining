@@ -27,7 +27,7 @@
     "@luciad/ria-toolbox-player": "file:lib/toolbox/ria/player",
     "@luciad/ria-toolbox-recorder": "file:lib/toolbox/ria/recorder",
     "@luciad/ria-toolbox-ruler3d": "file:lib/toolbox/ria/ruler3d",
-    "@luciad/ria-toolbox-scene-navigation": "file:lib/toolbox/ria/navigation",
+    "@luciad/ria-toolbox-scene-navigation": "file:lib/toolbox/ria/scene-navigation",
     "@luciad/ria-toolbox-slicing": "file:lib/toolbox/ria/slicing",
     "@luciad/ria-toolbox-tour": "file:lib/toolbox/ria/tour"
   },
