@@ -1,7 +1,7 @@
 # Creating a new App Using Vite with React + TypeScript
 
 Creating a new React application using Vite with TypeScript is a straightforward process that leverages Vite's fast build times and modern tooling. 
-In this guide, we'll walk through the steps to set up a new React app named `vite-luciadria` using Vite and TypeScript.
+In this guide, we'll walk through the steps to set up a new React app named `vite-luciadria-m2` using Vite and TypeScript.
 
 ## Step-by-Step Guide to Create a React App with Vite and TypeScript
 
@@ -14,7 +14,7 @@ Before you begin, ensure you have Node.js installed on your machine. You can dow
 Open your terminal and run the following command to create a new React app using Vite:
 
 ```bash
-npm create vite@latest vite-luciadria -- --template react-ts
+npm create vite@latest vite-luciadria-m2 -- --template react-ts
 ```
 
 ### Step 3: Navigate to Your Project Directory
@@ -22,7 +22,7 @@ npm create vite@latest vite-luciadria -- --template react-ts
 Once the project is created, navigate into your project directory:
 
 ```bash
-cd vite-luciadria
+cd vite-luciadria-m2
 ```
 
 ### Step 4: Install Dependencies

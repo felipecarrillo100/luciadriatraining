@@ -93,7 +93,9 @@ Define a new entry point `LicenseLoader.ts`  in `index.html`:
 </html>
 ```
 
-Then, load the license:
+Then, load the license, here you have two options:
+
+### Options 1: Load the license from a static string
 
 ```typescript
 import { setLicenseText } from "@luciad/ria/util/License.js";
@@ -103,5 +105,17 @@ import txt from './luciadria_development.txt?raw-txt';
 
 setLicenseText(txt);
 ```
+
+### Options 2: Load the license from url at run time
+
+```typescript
+import {loadLicenseFromUrls} from "@luciad/ria/util/License.js";
+
+loadLicenseFromUrls([
+    "./luciad/license/luciadria_development.txt"
+])
+
+```
+
 
 Since `LicenseLoader.ts` is loaded before `main.tsx` in `index.html`, the data will be loaded in the correct sequence without additional considerations.
