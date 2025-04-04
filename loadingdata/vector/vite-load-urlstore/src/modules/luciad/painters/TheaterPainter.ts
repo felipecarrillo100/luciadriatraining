@@ -24,7 +24,7 @@ const selectedStyle:  IconStyle = {
     height: "48px"
 }
 
-export class ThaterPainter extends FeaturePainter {
+export class TheaterPainter extends FeaturePainter {
     // @ts-ignore
     paintBody(geoCanvas: GeoCanvas, feature: Feature, shape: Shape, layer: Layer, map: Map, paintState: PaintState) {
         const style =
