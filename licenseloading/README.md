@@ -106,7 +106,42 @@ import txt from './luciadria_development.txt?raw-txt';
 setLicenseText(txt);
 ```
 
-### Options 2: Load the license from url at run time
+
+
+Since `LicenseLoader.ts` is loaded before `main.tsx` in `index.html`, the data will be loaded in the correct sequence without additional considerations.
+
+## Method 4: Applies to Angular, CRA and VITE 
+The method 4 is a combination of method 1 and 2. 
+* `Method 1` loads the license at runtime from a relative path specified in index.html, 
+
+* `Method 2` sets the license as a static string loaded from a file at compilation.
+
+The `Method 4` allows you to specify a URL (relative or absolute) from where the application will retrieve license at run-time.
+
+```typescript
+loadLicenseFromUrls([
+    "./luciad/license/luciadria_development.txt"
+])
+```
+
+In principle, to use this method can simply replace `setLicenseText` from the previous examples with `loadLicenseFromUrls([url])` and the rest of your code can stay the same. 
+The only difference, is that every time your application loads, it will try to download the license file from the url(s) indicated.
+
+Obviously importing your license file as txt is no longer needed and that code can be removed from your application.
+
+### For instance, in the case of CRA and Angular, (Method 2 described above), this would become:
+
+```typescript
+import { loadLicenseFromUrls } from "@luciad/ria/util/License.js";
+
+export default function LicenseLoader() {
+    loadLicenseFromUrls(['URL_TO_LICENSE']);
+    // Main module is now imported after loading the license
+    return import('../pathto/YOURMAINMODULE');
+}
+```
+
+### Or in the case of VITE this would become:
 
 ```typescript
 import {loadLicenseFromUrls} from "@luciad/ria/util/License.js";
@@ -117,5 +152,16 @@ loadLicenseFromUrls([
 
 ```
 
+## Conclusions
 
-Since `LicenseLoader.ts` is loaded before `main.tsx` in `index.html`, the data will be loaded in the correct sequence without additional considerations.
+LuciadRIA is a framework-agnostic solution that can be seamlessly integrated with any framework, such as React, Angular, Vite, Vue, or even Vanilla JavaScript. While JavaScript is supported, using TypeScript is strongly recommended due to its numerous benefits, including enhanced code quality and maintainability.
+
+As a commercial software product, LuciadRIA requires a valid license for use. A license check has been implemented, with multiple methods available to accommodate the specific needs of your applications. Each method has its own advantages and disadvantages, so you can choose the one that best suits your requirements.
+
+For example:
+
+- **License Loaded as Static Text String at Compilation**: In this method, the license is embedded into your JavaScript code during compilation, making it more secure against unauthorized access. However, if the license expires, you will need to recompile and redeploy your application with the updated license.
+
+- **License Loaded at Run-Time**: Here, the license is retrieved over the network each time the application loads, which makes it visible to others. The benefit of this approach is that you can update the license without recompiling the code; simply replace the license file on your web server.
+
+By understanding these options, you can select the licensing method that aligns best with your application’s needs and operational considerations.
