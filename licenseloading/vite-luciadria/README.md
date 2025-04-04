@@ -1,6 +1,6 @@
 # Creating a new App Using Vite with React + TypeScript
 
-Creating a new React application using Vite with TypeScript is a straightforward process that leverages Vite's fast build times and modern tooling. 
+Creating a new React application using Vite with TypeScript is a straightforward process that leverages Vite's fast build times and modern tooling.
 In this guide, we'll walk through the steps to set up a new React app named `vite-luciadria` using Vite and TypeScript.
 
 ## Step-by-Step Guide to Create a React App with Vite and TypeScript
@@ -64,7 +64,7 @@ Now that your app is set up, you can start customizing it. The main files you'll
 - **`App.tsx`**: The main component of your React application. You can modify this file to change the content displayed on your app's homepage.
 
 
-## LuciadRIA License
+## LuciadRIA License as a static string
 
 This method is tailored for React with Vite, which does not use Webpack.
 
@@ -88,7 +88,7 @@ Define a new entry point `LicenseLoader.ts`  in `index.html`:
 </html>
 ```
 
-Then, load the license:
+Then, load the license as a static string
 
 ```typescript
 import { setLicenseText } from "@luciad/ria/util/License.js";
