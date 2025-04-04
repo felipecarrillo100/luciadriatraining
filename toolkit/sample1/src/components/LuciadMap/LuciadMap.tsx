@@ -5,77 +5,13 @@ import {WMSTileSetLayer} from "@luciad/ria/view/tileset/WMSTileSetLayer.js";
 import {WMSTileSetModel} from "@luciad/ria/model/tileset/WMSTileSetModel.js";
 import {TileSet3DLayer} from "@luciad/ria/view/tileset/TileSet3DLayer.js";
 import {OGC3DTilesModel} from "@luciad/ria/model/tileset/OGC3DTilesModel.js";
-import {createCircle} from "@luciad/ria-toolbox-core/util/IconFactory.js";
 
 import "./LuciadMap.css";
+
 import {Ruler3DController} from "@luciad/ria-toolbox-ruler3d/Ruler3DController.ts";
 import {createMeasurement} from "@luciad/ria-toolbox-ruler3d/measurement/MeasurementUtil.ts";
 import {DISTANCE_MEASUREMENT_TYPE} from "@luciad/ria-toolbox-ruler3d/measurement/DistanceMeasurement.ts";
-import {IconStyle} from "@luciad/ria/view/style/IconStyle.js";
-import {MeasurementPaintStyles} from "@luciad/ria-toolbox-ruler3d/measurement/Measurement.ts";
-
-
-const RULER_COLOR = "rgb(255,0,0)";
-const HELPER_COLOR = "rgb(255,255,0)";
-
-export const OGC3D_PAINT_STYLES: MeasurementPaintStyles = {
-    mainLineStyles: [
-        {
-            stroke: {
-                color: RULER_COLOR,
-                width: 5
-            }
-        },
-    ],
-    helperLineStyles: [
-        {
-            stroke: {
-                color: HELPER_COLOR,
-                width: 1
-            }
-        },
-    ],
-    areaStyles: [
-        {
-            fill: {
-                color: "rgba(255,200,0,0.2)"
-            },
-            stroke: {
-                color: "rgba(0,0,0,0)",
-                width: 1
-            }
-        },
-    ],
-    pointStyles: [createIconStyle(RULER_COLOR)],
-    mainLabelHtmlStyle: createHtmlStyle(RULER_COLOR),
-    helperLabelHtmlStyle: createHtmlStyle(HELPER_COLOR, "rgb(0,0,0)"),
-};
-
-function createHtmlStyle(haloColor?: string, textColor?: string): string {
-    textColor = textColor || "rgb(255,255,255)";
-    haloColor = haloColor || "rgb(0,0,0)";
-    return `font: bold 14px sans-serif;color:${textColor};text-shadow:${createTextShadowHalo(
-        haloColor)}`;
-}
-
-function createTextShadowHalo(color: string): string {
-    return `1px 1px ${color}, 1px -1px ${color}, -1px 1px ${color}, -1px -1px ${color};`;
-}
-
-
-function createIconStyle(color: string): IconStyle {
-    const iconSize = 17;
-    return {
-        image: createCircle({
-            stroke: color,
-            fill: color,
-            width: iconSize,
-            height: iconSize
-        }),
-        width: `${iconSize}px`,
-        height: `${iconSize}px`
-    };
-}
+import {OGC3D_PAINT_STYLES} from "./Ruler3DStyling.ts";
 
 
 export const LuciadMap: React.FC = () => {

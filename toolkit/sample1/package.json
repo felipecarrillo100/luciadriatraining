@@ -1,13 +1,13 @@
 {
-  "name": "vite-load-mesh",
+  "name": "sample1",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "../../panoramas/vite-load-panorama/node_modules/.bin/vite",
-    "build": "../../panoramas/vite-load-panorama/node_modules/.bin/tsc -b && vite build",
-    "lint": "../../panoramas/vite-load-panorama/node_modules/.bin/eslint ",
-    "preview": "../../panoramas/vite-load-panorama/node_modules/.bin/vite preview"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint ",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@luciad/ria": "^2024.1.6",

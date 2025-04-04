@@ -18,9 +18,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-    "paths": {
-      "@luciad/ria-toolbox-config/*": ["relative/path/to/ria-toolbox-config/*"]
-    }
+    "noUncheckedSideEffectImports": true
   }
 }

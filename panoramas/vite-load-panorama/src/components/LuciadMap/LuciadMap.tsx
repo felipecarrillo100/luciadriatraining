@@ -11,6 +11,8 @@ import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel.js";
 import {FusionPanoramaModel} from "@luciad/ria/model/tileset/FusionPanoramaModel.js";
 import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer.js";
 import {PanoramaFeaturePainter} from "../../modules/luciad/painters/PanoramaFeaturePainter.ts";
+import {PanoramaActions} from "../../modules/luciad/pano/actions/PanoramaActions.ts";
+import {CreatePanoramaControllers} from "../../modules/luciad/pano/controller/CreatePanoramaControllers.ts";
 
 export const LuciadMap: React.FC = () => {
     const divElement = useRef(null as null | HTMLDivElement);
@@ -42,15 +44,16 @@ function LoadLayers(map: WebGLMap) {
     const layerImageryName = [{layer: "4ceea49c-3e7c-4e2d-973d-c608fb2fb07e"}];
 
     // Adds a WMS layer as a background
-    WMSTileSetModel.createFromURL(wmsUrl, layerImageryName, {}).then((model: WMSTileSetModel) => {
+    WMSTileSetModel.createFromURL(wmsUrl, layerImageryName, {}).then(async (model: WMSTileSetModel) => {
         const layer = new WMSTileSetLayer(model, {
             label: "Satellite Imagery",
         });
         map.layerTree.addChild(layer);
 
         // Once whe WMS layer has been loaded the Mesh layer
-        addMeshLayer(map);
-        addPanoramaLayer(map);
+        addMeshLayer(map).then(()=>{
+            addPanoramaLayer(map);
+        });
     });
 }
 
@@ -58,17 +61,18 @@ function LoadLayers(map: WebGLMap) {
 
 // Adding a Memory Store
 function addMeshLayer(map: WebGLMap) {
-    const url = "https://sampledata.luciad.com/data/ogc3dtiles/LucerneAirborneMesh/tileset.json"
+    return new Promise<TileSet3DLayer>((resolve)=>{
+        const url = "https://sampledata.luciad.com/data/ogc3dtiles/LucerneAirborneMesh/tileset.json"
+        OGC3DTilesModel.create(url, {}).then((model:OGC3DTilesModel)=>{
+            //Create a layer for the model
+            const layer = new TileSet3DLayer(model, {
+                label: "Mesh Layer",
+            });
 
-    OGC3DTilesModel.create(url, {}).then((model:OGC3DTilesModel)=>{
-        //Create a layer for the model
-        const layer = new TileSet3DLayer(model, {
-            label: "Mesh Layer",
+            //Add the layer to the map
+            map.layerTree.addChild(layer);
+            resolve(layer);
         });
-
-        //Add the layer to the map
-        map.layerTree.addChild(layer);
-
     });
 }
 
@@ -106,8 +110,8 @@ function addPanoramaLayer(map: WebGLMap) {
         }
         queryFinishedHandle.remove();
     });
+
+    const panoramaActions = new PanoramaActions(map as WebGLMap)
+    map.controller = CreatePanoramaControllers(panoramaActions, map, layer);
+
 }
-
-
-
-
