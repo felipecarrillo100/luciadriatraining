@@ -1,14 +1,14 @@
-import {loadLicenseFromUrls} from "@luciad/ria/util/License.js";
+import {setLicenseText} from "@luciad/ria/util/License.js";
 
+// @ts-ignore
+import txt from './luciadria_development.txt';
 
 export default function LicenseLoader() {
 
-  loadLicenseFromUrls([
-    "./luciad/license/luciadria_development.txt"
-  ])
+  setLicenseText(txt);
 
-    // Library is imported after loading the license
-    return import('../app/app.component');
+  // Library is imported after loading the license
+  return import('../app/app.component');
 }
 
 
