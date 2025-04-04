@@ -1,14 +1,17 @@
 import React, {useEffect, useRef} from "react";
 import {WebGLMap} from "@luciad/ria/view/WebGLMap.js";
 import {getReference} from "@luciad/ria/reference/ReferenceProvider.js";
-import "./LuciadMap.css";
 import {WMSTileSetLayer} from "@luciad/ria/view/tileset/WMSTileSetLayer.js";
 import {WMSTileSetModel} from "@luciad/ria/model/tileset/WMSTileSetModel.js";
-import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel.js";
-import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer.js";
-import {TheaterPainter} from "../../modules/luciad/painters/TheaterPainter.ts";
+import {TileSet3DLayer} from "@luciad/ria/view/tileset/TileSet3DLayer.js";
+import {OGC3DTilesModel} from "@luciad/ria/model/tileset/OGC3DTilesModel.js";
+import "./LuciadMap.css";
 import {UrlStore} from "@luciad/ria/model/store/UrlStore.js";
-
+import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel.js";
+import {FusionPanoramaModel} from "@luciad/ria/model/tileset/FusionPanoramaModel.js";
+import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer.js";
+import {PanoramaFeaturePainter} from "../../modules/luciad/painters/PanoramaFeaturePainter.ts";
+import {TheaterPainter} from "../../modules/luciad/painters/TheaterPainter.ts";
 
 export const LuciadMap: React.FC = () => {
     const divElement = useRef(null as null | HTMLDivElement);
@@ -24,9 +27,14 @@ export const LuciadMap: React.FC = () => {
             // Destroy map
             if (nativeMap.current) nativeMap.current.destroy();
         }
-    },[])
-    return (<div className="LuciadMap" ref={divElement}></div>)
+    },[]);
+
+
+    return (<div className="LuciadMap" >
+        <div ref={divElement} className="map"/>
+    </div>)
 }
+
 
 
 function LoadLayers(map: WebGLMap) {
@@ -36,34 +44,58 @@ function LoadLayers(map: WebGLMap) {
 
     // Adds a WMS layer as a background
     WMSTileSetModel.createFromURL(wmsUrl, layerImageryName, {}).then((model: WMSTileSetModel) => {
-        const layer = new WMSTileSetLayer(model, {label: "Satellite Imagery"});
+        const layer = new WMSTileSetLayer(model, {
+            label: "Satellite Imagery",
+        });
         map.layerTree.addChild(layer);
 
-        // Once whe WMS layer has been loaded Add the WFS layer
-        loadTheaters(map);
+        // Once whe WMS layer has been loaded the Mesh layer
+        addMeshLayer(map);
+        addPanoramaLayer(map);
     });
 }
 
-// Using  WFSFeatureStore.createFromUR
-function loadTheaters(map: WebGLMap) {
-    const url = "./public/data/bruxelles_theatres.geojson";
-    const store= new UrlStore({
-        target: url
-    });
 
+
+// Adding a Memory Store
+function addMeshLayer(map: WebGLMap) {
+    const url = "https://sampledata.luciad.com/data/ogc3dtiles/LucerneAirborneMesh/tileset.json"
+
+    OGC3DTilesModel.create(url, {}).then((model:OGC3DTilesModel)=>{
+        //Create a layer for the model
+        const layer = new TileSet3DLayer(model, {
+            label: "Mesh Layer",
+        });
+
+        //Add the layer to the map
+        map.layerTree.addChild(layer);
+
+    });
+}
+
+function addPanoramaLayer(map: WebGLMap) {
+    const target = "https://sampledata.luciad.com/data/panoramics/LucernePegasus/cubemap_final.json";
+    const store = new UrlStore({
+        target
+    });
     const model = new FeatureModel(store);
-    //Create a layer for the model
+
+    const panoModel = new FusionPanoramaModel(target);
+
     const layer = new FeatureLayer(model, {
-        label: "Theaters Brussels",
-        selectable: true,
-        hoverable: true
+        panoramaModel: panoModel,
+        selectable: false,
+        hoverable: true,
+        painter:new PanoramaFeaturePainter({
+            overview: false,
+            iconHeightOffset: 0
+        })
     });
 
-    layer.painter = new TheaterPainter();
-    //Add the model to the map
+    //Add the layer to the map
     map.layerTree.addChild(layer);
 
-    //fit on the cities layer
+    //fit on the Panorama layer
     const queryFinishedHandle = layer.workingSet.on("QueryFinished", () => {
         if (layer.bounds) {
             //#snippet layerFit
@@ -75,7 +107,6 @@ function loadTheaters(map: WebGLMap) {
         }
         queryFinishedHandle.remove();
     });
-
 }
 
 
