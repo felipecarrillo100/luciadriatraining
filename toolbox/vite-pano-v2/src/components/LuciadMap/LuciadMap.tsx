@@ -13,16 +13,30 @@ import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer.js";
 import {PanoramaFeaturePainter} from "../../modules/luciad/painters/PanoramaFeaturePainter.ts";
 import {PanoramaActions} from "../../modules/luciad/pano/actions/PanoramaActions.ts";
 import {CreatePanoramaControllers} from "../../modules/luciad/pano/controller/CreatePanoramaControllers.ts";
+import {BOX_CREATED_EVENT, BoxCreateController} from "@luciad/ria-toolbox-slicing/controllers/BoxCreateController.ts";
+import {OrientedBox} from "@luciad/ria/shape/OrientedBox.js";
+import {BoxSelectController} from "@luciad/ria-toolbox-slicing/controllers/BoxSelectController.ts";
+import {Effect, VisibilityBoxSupport} from "@luciad/ria-toolbox-slicing/VisibilityBoxSupport.ts";
+import {LayerGroup} from "@luciad/ria/view/LayerGroup.js";
+import {orientedBox} from "@luciad/ria/util/expression/ExpressionFactory.js";
 
 export const LuciadMap: React.FC = () => {
     const divElement = useRef(null as null | HTMLDivElement);
     const nativeMap = useRef(null as null | WebGLMap);
+    const visibilityBoxSupport = useRef(null as null | VisibilityBoxSupport);
 
     useEffect(()=>{
         // Initialize Map
         if (divElement.current!==null) {
             nativeMap.current = new WebGLMap(divElement.current, {reference: getReference("EPSG:4978")});
             LoadLayers(nativeMap.current);
+
+            let layerGroup = nativeMap.current.layerTree.findLayerGroupById("VisibilityBoxSupportLayerGroup")
+            if (!layerGroup) {
+                layerGroup = new LayerGroup({label: "Visibility boxes", id: "VisibilityBoxSupportLayerGroup"});
+                nativeMap.current.layerTree.addChild(layerGroup);
+            }
+            if (!visibilityBoxSupport.current) visibilityBoxSupport.current =  new VisibilityBoxSupport(nativeMap.current, layerGroup, []);
         }
         return ()=>{
             // Destroy map
@@ -30,9 +44,44 @@ export const LuciadMap: React.FC = () => {
         }
     },[]);
 
+    const onClick = () => {
+        if (nativeMap.current) {
+            const createController = new BoxCreateController();
+            nativeMap.current.controller = createController;
+            const createHandle = createController.on(
+                BOX_CREATED_EVENT,
+                (box: OrientedBox) => {
+                    createHandle.remove();
+                    const newConfig = {
+                        id: new Date().toISOString(),
+                        name: "box",
+                        enabled: true,
+                        expression: orientedBox(box),
+                        isInsideLayers: [],
+                        isOutsideLayers: [],
+                        newLayersEffect: Effect.NONE,
+                    }
+                    if (nativeMap.current && visibilityBoxSupport.current) {
+                        visibilityBoxSupport.current.addConfig(newConfig);
+                        nativeMap.current.controller = new BoxSelectController(visibilityBoxSupport.current
+                        , (controller)=>{
+                                                    console.log(controller);
+                                                    if (nativeMap.current) {
+                                                        nativeMap.current.controller = controller
+                                                    }
+                                                })
+                    }
+                }
+            );
+        }
+    }
+
 
     return (<div className="LuciadMap" >
         <div ref={divElement} className="map"/>
+        <div className="button-bar">
+            <button onClick={onClick}>BBox</button>
+        </div>
     </div>)
 }
 

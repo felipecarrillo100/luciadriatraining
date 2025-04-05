@@ -1,7 +1,0 @@
-{
-  "extends": "@luciad/ria-toolbox-config/tsconfig.json",
-  "compilerOptions": {
-    "outDir": "lib",
-    "declaration": true
-  }
-}
