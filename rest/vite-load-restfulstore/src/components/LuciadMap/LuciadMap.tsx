@@ -120,36 +120,6 @@ function addListenerOnSelectionChange(map: WebGLMap) {
     });
 }
 
-// Adding a Memory Store
-function addMemoryStoreLayer(map: WebGLMap) {
-    const store= new LocalStorageStore({item:"SomePolygonData"});
-
-    const model = new FeatureModel(store);
-    //Create a layer for the model
-    const layer = new FeatureLayer(model, {
-        label: "Editable Layer",
-        selectable: true,
-        hoverable: true,
-        id: TargetEditableLayerID
-    });
-
-    //Add the model to the map
-    map.layerTree.addChild(layer);
-
-    // Fit on the layer data
-    const queryFinishedHandle = layer.workingSet.on("QueryFinished", () => {
-        if (layer.bounds) {
-            //#snippet layerFit
-            map.mapNavigator.fit({
-                bounds: layer.bounds,
-                animate: true
-            });
-            //#endsnippet layerFit
-        }
-        queryFinishedHandle.remove();
-    });
-    return layer;
-}
 
 // Adding a Memory Store
 function addRestfulStoreLayer(map: WebGLMap) {
