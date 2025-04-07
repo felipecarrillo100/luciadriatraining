@@ -14,7 +14,6 @@ export class LocalStorageStore extends MemoryStore {
         this.item = options.item;
     }
 
-
     private static loadData(item: string): Feature[] {
         const dataStr = window.localStorage.getItem(item);
         if (!dataStr) return [];
