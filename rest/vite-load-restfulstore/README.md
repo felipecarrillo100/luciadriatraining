@@ -1,105 +1,100 @@
-## Editing a Store
+## Creating an Editable RESTful Store
 
-In previous exercises, we have worked with read-only FeatureLayers. However, it's often necessary to edit a feature layer by adding new features, deleting existing ones, or updating current features.
+In previous exercises, we demonstrated how to create editable feature layers. We utilized existing stores from the LuciadRIA API and extended functionality to store data in memory and LocalStorage. However, many applications require more permanent data storage, typically in a database. To achieve this, we have implemented a REST API for storing features.
 
-To enable these operations, we need a store that supports write operations such as `add`, `put`, and `remove`. 
+In this tutorial, we will focus on creating a RESTful store that interacts with a backend using standard operations: Get, Add, Put, and Remove. We will build the store from scratch, following these steps:
 
-The `MemoryStore` is an excellent example of such a store. You can find more information at
+### Step 1: Create the RestApiStore Class
 
-[MemoryStore Documentation](https://dev.luciad.com/portal/productDocumentation/LuciadRIA/docs/reference/LuciadRIA/classes/_luciad_ria_model_store_MemoryStore.MemoryStore.html).
-
-Additionally, we need a `Controller` capable of editing the features we wish to modify.
-
-## Controllers
-
-The LuciadRIA architecture follows the Model-View-Controller (MVC) pattern:
-
-- **Model**: Manages data access and business logic.
-- **View**: Displays data to the user and sends user commands to the controller. In LuciadRIA, the view consists of the Map and Layers.
-- **Controller**: Acts as an intermediary, processing user input and updating the model and view accordingly, coordinating actions between them.
-
-All LuciadRIA maps have a controller. If no specific controller is assigned, the map defaults to the standard controller.
-
-### Introduction to Editing Controllers
-
-Controllers can be specialized for specific tasks, such as measuring distances or editing features.
-
-All controllers must extend from the `Controller` class or any of its subclasses. More details can be found at the [Controller Documentation](https://dev.luciad.com/portal/productDocumentation/LuciadRIA/docs/reference/LuciadRIA/classes/_luciad_ria_view_controller_Controller.Controller.html).
-
-Many Controller are already available in the API. And of course, you can also create custom controllers to implement specific functionalities.
-
-Among the Controllers available in the API we can find the Edit-Controllers. Edit controllers allows us to create or edit features, which are then stored in the model's store and displayed as a layer.
-
-LuciadRIA provides two controllers for editing:
-
-- `BasicCreateController`: Allows you to create new features.
-- `EditController`: Allows the creation of new features.
-
-In this example, we will create our own controller by extending `BasicCreateController`.
-
-### Creating a Custom Controller
-
-To develop this custom controller, extend the `BasicCreateController`, which already handles most of the necessary functionality. You only need to add specific customizations.
+Begin by creating a new class that extends `EventedSupport` and implements all methods defined in the `Store` interface:
 
 ```typescript
-// Extend from a Controller class
-class CreateFeatureInLayerController extends BasicCreateController {
-    // Define a new constructor
-    constructor(shapeType: ShapeType, defaultProperties?: FeatureProperties, options?: CreateFeatureInLayerControllerOptions) {
-        // Call the parent class constructor
-        super(shapeType, defaultProperties, options as CreateControllerConstructorOptions);
-        // Add your initialization code here
-        ...
-    }
-    
-    // Implement or overwrite any methods required
-    ...
+export class RestApiStore extends EventedSupport implements Store {
+    // Class implementation will go here
+}
+```
+* `EventedSupport` is important because it will allow us to trigger events to the map
+  * `Store` Is an interface that defined all the CRUD methods that provide the data manipulation operations such as `add`, `put`, `remove`, `get`, `query` that we will have to implement on our own.
+
+### Step 2: Implement CRUD Methods with Asynchronous Operations
+
+Since AJAX calls to the REST API are asynchronous, you need to handle these operations using promises.
+
+#### Example: Implementing the `get` Method
+
+The `get` method retrieves a feature by its ID: In this case we return a promise to a Feature. Notice we use fetch to perform the AJAX request but feel free to use your preferred library for this purpose,
+
+```typescript
+get(assetId: FeatureId): Promise<Feature> {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json"); // Ensure JSON content type
+    const requestOptions: RequestInit = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: "follow"
+    };
+    return new Promise<Feature>(resolve => {
+        fetch(`${this.endpoint}/${assetId}`, requestOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+            })
+            .then(content => {
+                const feature = this.decodeOne({content, contentType: "application/json"});
+                resolve(feature);
+            })
+            .catch(() => {
+                resolve(undefined as any);
+            });
+    });
 }
 ```
 
-To assign a controller to a Map, simply set your new controller as the map's controller:
+### Important: Emitting StoreChanged Events
+
+Whenever a method causes a feature to change (`add`, `put`, `remove`), it must trigger a `StoreChanged` event. This event informs the LuciadRIA Map that the feature has changed and needs re-rendering. For instance, in the `put` method requires to emit a `StoreChanged`/`update`. See the code snippet below:
 
 ```typescript
-map.controller = new CreateFeatureInLayerController(...any parameters needed...);
+put(feature: Feature, options?: any): Promise<string> {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json"); // Ensure JSON content type
+    const item = this.encode(feature);
+
+    const requestOptions: RequestInit = {
+        method: 'PUT',
+        headers: myHeaders,
+        body: JSON.stringify(item),
+        redirect: 'follow'
+    };
+
+    return new Promise<string>(resolve => {
+        fetch(`${this.endpoint}/${feature.id}`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                feature.id = result.id;
+                this.emit("StoreChanged", "update", feature, result.id);
+                resolve(result.id);
+            })
+            .catch(error => {
+                console.log('error', error);
+            });
+    });
+}
 ```
 
-This Controller will allow us to create a new Feature, and once the feature is created the control of the map goes back to the default controller.
+Similarly, emit events for the following actions:
 
+- `this.emit("StoreChanged", "add", feature, feature.id);`
+- `this.emit("StoreChanged", "update", feature, result.id);`
+- `this.emit("StoreChanged", "remove", undefined, assetId);`
 
-## Events
+### Note
 
-This example requires an understanding of the concept of events.
+In our previous `LocalStorageStore` example, we didn't manually trigger events because we extended an existing class. The parent class methods (`super.put()`, `super.add()`, `super.remove()`) triggered `StoreChanged` events behind the scenes.
 
-An event is an occurrence or action that takes place within an application, prompting the execution of a specific task whenever the event occurs. Events utilize a Subscribe/Notify pattern, where listeners are registered (subscribed) to events and are triggered (notified) to perform actions when these events happen.
+### Final Note: Using the Toolbox Library
 
-LuciadRIA supports a variety of events. For instance, the LuciadRIA Map includes:
+This example uses the toolbox library to create a context menu on right-clicking features. Since this context menu is React-based, it won't work in an Angular project. You'll need to find an alternative solution for Angular applications.
 
-- **MapChange**: Triggered when the visible area of the map changes.
-- **SelectionChange**: Activated when the selection of features or other selectable items on the map changes.
-- **ControllerChange**: Occurs when a new controller is assigned to the map.
-
-There are many more events available. For a comprehensive list, please refer to the [LuciadRIA documentation](https://dev.luciad.com/portal/productDocumentation/LuciadRIA/docs/reference/LuciadRIA/classes/_luciad_ria_view_WebGLMap.WebGLMap.html).
-
-In this example, we will assign the `EditController` whenever a single individual feature is selected.
-
-Here is how it can be implemented:
-
-```typescript
-// This code will be called every time the selection change in the map
-map.on("SelectionChanged", () => {
-  const selection = map.selectedObjects;
-  // Verify only one layer / one feature is selected
-  if (selection.length === 1 && selection[0].layer === layer) {
-    if (selection[0].selected.length === 1) {
-      const feature = selection[0].selected[0];
-      // Set the Edit controller to edit the selected feature
-      const editController = new EditController(layer, feature, {
-        finishOnSingleClick: true
-      });
-      map.controller = editController;
-    }
-  }
-});
-```
-
-This code snippet listens for the "SelectionChanged" event and assigns an `EditController` when exactly one feature is selected on the specified layer.
