@@ -36,6 +36,7 @@ npm start
 ## API Endpoints
 
 - **GET /api/items**: Retrieve all stored items.
+- **GET /api/items/:id****: Retrieve an item by `id`.
 - **POST /api/items**: Add a new item. Send a JSON object in the request body.
 - **PUT /api/items/:id**: Update an existing item by `id`. Send the updated fields in the request body.
 - **DELETE /api/items/:id**: Delete an item by `id`.
@@ -53,6 +54,12 @@ npm start
 
   ```bash
   curl http://localhost:3000/api/items
+  ```
+
+- **Get an item**:
+
+  ```bash
+  curl http://localhost:3000/api/items/123456789
   ```
 
 - **Update an item**:
