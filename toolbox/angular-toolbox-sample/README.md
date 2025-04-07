@@ -36,6 +36,27 @@ Then, place your license file at the following path:
 ```shell
 ./public/luciad/license/luciadria_development.txt
 ```
+##  WHen using Angular 19,  this version used Vite for development.
+You may want to look at the migration procedures.
+
+In case you want to use the toolkit in Angular 19 modify your angular.json to load glb and to skipt rebundle for the ria-toolbox
+```json
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "prebundle": {
+              "exclude": ["ria-toolbox"]
+            }
+          },
+```
+For the loaders be able to retrieve static content from the ria-toolkit. i.e glb files
+```json
+   "loader": {
+      ".glb": "file"
+    }
+```
+
+
 
 ## Development server
 
