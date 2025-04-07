@@ -1,4 +1,4 @@
-import {Feature} from "@luciad/ria/model/feature/Feature.js";
+import {Feature, FeatureId} from "@luciad/ria/model/feature/Feature.js";
 import {EventedSupport} from "@luciad/ria/util/EventedSupport.js";
 import {GeoJsonCodec} from "@luciad/ria/model/codec/GeoJsonCodec.js";
 import {CoordinateReference} from "@luciad/ria/reference/CoordinateReference.js";
@@ -109,7 +109,7 @@ export class RestApiStore extends EventedSupport implements Store {
     }
 
 
-    remove(assetId:string):Promise<boolean> {
+    remove(assetId:FeatureId):Promise<boolean> {
         const myHeaders = new Headers();
         const requestOptions: RequestInit = {
             method: 'DELETE',
@@ -124,9 +124,6 @@ export class RestApiStore extends EventedSupport implements Store {
                     if (!response.ok) {
                         throw new Error("HTTP error " + response.status);
                     }
-                    return response.json();
-                })
-                .then(() => {
                     this.emit("StoreChanged", "remove", undefined, assetId);
                     resolve(true);
                 })
@@ -136,7 +133,7 @@ export class RestApiStore extends EventedSupport implements Store {
         })
     }
 
-    get(assetId: string):Promise<Feature> {
+    get(assetId: FeatureId):Promise<Feature> {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json"); // Ensure JSON content type
         const requestOptions: RequestInit = {

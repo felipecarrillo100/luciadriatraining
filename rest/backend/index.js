@@ -31,6 +31,19 @@ app.get('/api/items', (req, res) => {
     res.json(data);
 });
 
+// API endpoint to get an item by ID
+app.get('/api/items/:id', (req, res) => {
+    const itemId = parseInt(req.params.id, 10);
+    const data = readData();
+    const item = data.find(item => item.id === itemId);
+
+    if (!item) {
+        return res.status(404).json({ message: 'Item not found' });
+    }
+
+    res.json(item);
+});
+
 // API endpoint to add a new item
 app.post('/api/items', (req, res) => {
     const newItem = { id: Date.now(), ...req.body }; // Generate a unique ID

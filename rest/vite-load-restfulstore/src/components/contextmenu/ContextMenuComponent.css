@@ -1,0 +1,69 @@
+/*
+ *
+ * Copyright (c) 1999-2025 Luciad All Rights Reserved.
+ *
+ * Luciad grants you ("Licensee") a non-exclusive, royalty free, license to use,
+ * modify and redistribute this software in source and binary code form,
+ * provided that i) this copyright notice and license appear on all copies of
+ * the software; and ii) Licensee does not utilize the software in a manner
+ * which is disparaging to Luciad.
+ *
+ * This software is provided "AS IS," without a warranty of any kind. ALL
+ * EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING ANY
+ * IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE OR
+ * NON-INFRINGEMENT, ARE HEREBY EXCLUDED. LUCIAD AND ITS LICENSORS SHALL NOT BE
+ * LIABLE FOR ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING
+ * OR DISTRIBUTING THE SOFTWARE OR ITS DERIVATIVES. IN NO EVENT WILL LUCIAD OR ITS
+ * LICENSORS BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR DIRECT,
+ * INDIRECT, SPECIAL, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER
+ * CAUSED AND REGARDLESS OF THE THEORY OF LIABILITY, ARISING OUT OF THE USE OF
+ * OR INABILITY TO USE SOFTWARE, EVEN IF LUCIAD HAS BEEN ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGES.
+ */
+@import "./styles.css";
+
+.context-menu {
+    min-width: 130px;
+    position: absolute;
+    background-color: var(--panel-bg-color);
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    z-index: 900;
+    box-shadow: var(--shadow);
+}
+
+.context-menu-item {
+    color: var(--text-color-normal);
+    background-color: var(--panel-bg-color); /* certain Chrome extensions have a CSS rule for .context-menu-item, make sure both color and background-color are set on the items */
+    line-height: 40px;
+    vertical-align: top;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.context-menu-item .lcd-icon {
+    margin-right: 5px;
+    font-size: 1.3em;
+}
+
+.context-menu-item:hover {
+    background-color: var(--button-bg-hover-color);
+    cursor: pointer;
+}
+
+.context-menu-item.separator {
+    height: 1px;
+    background-color: var(--text-color);
+}
+
+.context-menu-item .checkbox {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
+}

@@ -10,8 +10,12 @@ import {CreateFeatureInLayerController} from "../../modules/luciad/controllers/C
 import {EditController} from "@luciad/ria/view/controller/EditController.js";
 import "./LuciadMap.css";
 import {Feature} from "@luciad/ria/model/feature/Feature.js";
-import {LocalStorageStore} from "../../modules/luciad/stores/LocalStorageStore.ts";
 import {RestApiStore} from "../../modules/luciad/stores/RestApiStore.ts";
+import {ContextMenu} from "@luciad/ria/view/ContextMenu.js";
+
+import {ContextMenuContext, useContextMenuState} from "ria-toolbox/libs/hooks/useContextMenu";
+import {ContextMenuComponent} from "../contextmenu/ContextMenuComponent.tsx";
+
 
 const DefaultProperties = {
     name: "",
@@ -23,11 +27,13 @@ const TargetEditableLayerID = "target-edit-layer";
 export const LuciadMap: React.FC = () => {
     const divElement = useRef(null as null | HTMLDivElement);
     const nativeMap = useRef(null as null | WebGLMap);
+    const contextMenuState = useContextMenuState();
 
     useEffect(()=>{
         // Initialize Map
         if (divElement.current!==null) {
             nativeMap.current = new WebGLMap(divElement.current, {reference: getReference("EPSG:4978")});
+            nativeMap.current.onShowContextMenu = contextMenuState.showContextMenu;
             LoadLayers(nativeMap.current);
         }
         return ()=>{
@@ -40,31 +46,21 @@ export const LuciadMap: React.FC = () => {
         if (nativeMap.current) createShapeInMap(nativeMap.current, shapeType)
     }
 
-    const clearll = () =>{
-        if (nativeMap.current) clearStore(nativeMap.current)
-    }
-
-    return (<div className="LuciadMap" >
-        <div ref={divElement} className="map"/>
-        <div className="button-bar">
-            <button onClick={editNewShape(ShapeType.POINT)}>Point</button>
-            <button onClick={editNewShape(ShapeType.POLYLINE)}>Line</button>
-            <button onClick={editNewShape(ShapeType.POLYGON)}>Polygon</button>
-            <button onClick={clearll}>Clear</button>
+    return (
+        <div className="LuciadMap">
+            <ContextMenuContext.Provider value={contextMenuState}>
+                <div ref={divElement} className="map"/>
+                <div className="button-bar">
+                    <button onClick={editNewShape(ShapeType.POINT)}>Point</button>
+                    <button onClick={editNewShape(ShapeType.POLYLINE)}>Line</button>
+                    <button onClick={editNewShape(ShapeType.POLYGON)}>Polygon</button>
+                </div>
+                <ContextMenuComponent/>
+            </ContextMenuContext.Provider>
         </div>
-    </div>)
+    )
 }
 
-function clearStore(map: WebGLMap) {
-    const layer = map.layerTree.findLayerById(TargetEditableLayerID) as FeatureLayer;
-    // If layer was found
-    if (layer instanceof FeatureLayer) {
-        const store = layer.model.store;
-        if (store instanceof LocalStorageStore) {
-            store.clear();
-        }
-    }
-}
 function createShapeInMap(map: WebGLMap, shapeType: ShapeType) {
     // Find a layer by ID in the map layerTree
     const layer = map.layerTree.findLayerById(TargetEditableLayerID) as FeatureLayer;
@@ -95,8 +91,26 @@ function LoadLayers(map: WebGLMap) {
        // const editableLayer = addMemoryStoreLayer(map);
         const editableLayer = addRestfulStoreLayer(map);
         // Create event
-        if (editableLayer) addListenerOnSelectionChange(map);
+        if (editableLayer) {
+            addEditableLayerContextMenu(editableLayer);
+            addListenerOnSelectionChange(map);
+        }
     });
+}
+
+function addEditableLayerContextMenu(featureLayer: FeatureLayer) {
+    // @ts-ignore
+    featureLayer.onCreateContextMenu = (contextMenu: ContextMenu, map: WebGLMap, contextMenuInfo: {layer: FeatureLayer, objects: Feature[]}): void => {
+        contextMenu.addItem({
+            label: "Remove Item",
+            action: () => {
+                if (contextMenuInfo.layer instanceof FeatureLayer && contextMenuInfo.objects.length===1) {
+                    const feature = contextMenuInfo.objects[0];
+                    if (contextMenuInfo.layer.model.store.remove) contextMenuInfo.layer.model.store.remove(feature.id);
+                }
+            }
+        });
+    };
 }
 
 function addListenerOnSelectionChange(map: WebGLMap) {
