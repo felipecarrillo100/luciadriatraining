@@ -40,7 +40,10 @@ export const LuciadMap: React.FC = () => {
     }
 
     const clearll = () =>{
-        if (nativeMap.current) clearStore(nativeMap.current)
+        if (nativeMap.current) {
+            nativeMap.current.controller = null;
+            clearStore(nativeMap.current)
+        }
     }
 
     return (<div className="LuciadMap" >
