@@ -42,7 +42,6 @@ function LoadLayers(map: WebGLMap) {
 
 function LoadTerrain(map: WebGLMap) {
     const ltsUrl = "https://sampleservices.luciad.com/lts";
-
     const layerImageryName = "world_elevation_6714a770-860b-4878-90c9-ab386a4bae0f";
 
     // Adds a WMS layer as a background
