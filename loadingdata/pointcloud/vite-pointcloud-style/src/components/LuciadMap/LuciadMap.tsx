@@ -15,6 +15,8 @@ import {
     pointParameter,
     positionAttribute
 } from "@luciad/ria/util/expression/ExpressionFactory.js";
+import {PointCloudStyle} from "@luciad/ria/view/style/PointCloudStyle.js";
+import {ScalingMode} from "@luciad/ria/view/style/ScalingMode.js";
 
 const COLOR_SPAN_HEIGHT_V2 = [
     "rgb( 51,102,  0)",
@@ -115,8 +117,7 @@ function addMeshLayer(map: WebGLMap) {
     });
 }
 
-function createPointStyle() {
-   // const earthRadiusAtSanFransisco = 6_370_268;
+function createPointStyle(): PointCloudStyle  {
     const earthRadiusAtSanFransisco = 6370268;
     const minParameter = numberParameter(earthRadiusAtSanFransisco - 200);
     const maxParameter = numberParameter(earthRadiusAtSanFransisco + 300);
@@ -134,6 +135,11 @@ function createPointStyle() {
     });
 
     return {
+        gapFill: 2,
+        pointSize:{
+            mode: ScalingMode.PIXEL_SIZE,
+            pixelSize: 2
+        },
         colorExpression: mixmap(heightFraction, colorMix)
     }
 
