@@ -8,6 +8,9 @@ import {FusionTileSetModel} from "@luciad/ria/model/tileset/FusionTileSetModel.j
 import {RasterTileSetLayer} from "@luciad/ria/view/tileset/RasterTileSetLayer.js";
 import {LayerTree} from "@luciad/ria/view/LayerTree.js";
 import {LayerTreeNode} from "@luciad/ria/view/LayerTreeNode.js";
+import {WFSFeatureStore} from "@luciad/ria/model/store/WFSFeatureStore.js";
+import {FeatureModel} from "@luciad/ria/model/feature/FeatureModel.js";
+import {FeatureLayer} from "@luciad/ria/view/feature/FeatureLayer.js";
 
 interface SimplifiedNode {
     label: string;
@@ -49,6 +52,17 @@ export const LuciadMap: React.FC = () => {
         }
     }
 
+    const addWMS = () => {
+        if (nativeMap.current) {
+            loadWMS(nativeMap.current);
+        }
+    }
+    const addWFS = () => {
+        if (nativeMap.current) {
+            loadWFS_States(nativeMap.current);
+        }
+    }
+
     useEffect(()=>{
         // Initialize Map
         if (divElement.current!==null) {
@@ -72,6 +86,10 @@ export const LuciadMap: React.FC = () => {
                     ))}
                 </div>
             )}
+        </div>
+        <div className="button-bar">
+            <button  onClick={addWMS}>Add WMS</button>
+            <button  onClick={addWFS}>Add WFS</button>
         </div>
     </div>)
 }
@@ -112,6 +130,7 @@ function AddLayerTreeListeners(map: WebGLMap, setLayerTree: (o:SimplifiedNode)=>
 
             return simplifiedNode;
         };
+        console.log(tree);
 
         return simplifyNode(tree);
     };
@@ -127,6 +146,10 @@ function AddLayerTreeListeners(map: WebGLMap, setLayerTree: (o:SimplifiedNode)=>
 }
 function LoadLayers(map: WebGLMap) {
     LoadTerrain(map);
+    loadWMS(map);
+}
+
+function loadWMS(map: WebGLMap) {
     const wmsUrl = "https://sampleservices.luciad.com/wms";
     const imagery = [{layer: "4ceea49c-3e7c-4e2d-973d-c608fb2fb07e"}];
 
@@ -148,5 +171,22 @@ function LoadTerrain(map: WebGLMap) {
             label: "Elevation layer",
         });
         map.layerTree.addChild(layer);
+    });
+}
+
+function loadWFS_States(map: WebGLMap) {
+    const wfsUrl = "https://sampleservices.luciad.com/wfs";
+    WFSFeatureStore.createFromURL(wfsUrl, "ns4:t_states__c__1213").then((store: WFSFeatureStore) => {
+        //Create a model for the store
+        const model = new FeatureModel(store);
+        //Create a layer for the model
+        const layer = new FeatureLayer(model, {
+            label: "USA",
+            selectable: true,
+            hoverable: true
+        });
+        //Add the model to the map
+        map.layerTree.addChild(layer);
+        if (layer.bounds) map.mapNavigator.fit({bounds: layer.bounds});
     });
 }
