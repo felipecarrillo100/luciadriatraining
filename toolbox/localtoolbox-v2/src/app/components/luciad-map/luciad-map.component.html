@@ -1,0 +1,15 @@
+<div class="LuciadMapContainer" >
+  <!--  Optionally you can put angular components here before the map -->
+  <div #luciadMapContainer class="LuciadMap"></div>
+  <!--  Optionally you can put angular components here after the map -->
+
+  <div class="info-bar">Area {{area}}</div>
+  <div class="button-bar">
+    <button (click)="default()">Default</button>
+    <button (click)="scene()">Scene</button>
+    <button (click)="ruler()">Ruler</button>
+    <button (click)="rulerArea()">Area</button>
+<!--    <button (click)="rulerHeight()">Area</button>-->
+  </div>
+</div>
+
