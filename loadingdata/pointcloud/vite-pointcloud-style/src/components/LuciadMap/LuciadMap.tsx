@@ -66,7 +66,7 @@ export const LuciadMap: React.FC = () => {
     return (<div className="LuciadMap" >
         <div ref={divElement} className="map"/>
         <div className="button-bar">
-            <button onClick={toggleStyle}>Toggle style</button>
+            <button onClick={toggleStyle}>Toggle Mode</button>
         </div>
     </div>)
 }
