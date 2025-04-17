@@ -43,15 +43,15 @@ function LoadLayers(map: WebGLMap) {
         });
         map.layerTree.addChild(layer);
 
-        // Once whe WMS layer has been loaded the Mesh layer
-        addMeshLayer(map);
+        // Once whe WMS layer has been loaded the HSPC layer
+        addHSPCLayer(map);
     });
 }
 
 
 
 // Adding a Memory Store
-function addMeshLayer(map: WebGLMap) {
+function addHSPCLayer(map: WebGLMap) {
     const url = "https://datamonster.myvr.net/mMap/data/pointcloud/APR/SanFrancisco/tree.hspc"
 
     // Create the model
