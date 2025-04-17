@@ -12,9 +12,17 @@
 
 .LuciadMap div.button-bar {
   position: absolute;
-  bottom: 10px;
-  right: 10px;
+  top: 10px;
+  right: 200px;
 }
+
+.LuciadMap div.vertical-slider {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 95%;
+}
+
 .LuciadMap div.button-bar button{
   width: 80px;
   font-size: 12px;
@@ -24,36 +32,11 @@
   border: 1px solid cyan;
 }
 
-
-.painter_state_label {
-  font-family: Verdana, sans-serif;
-  font-size: 12px;
-  color: white;
-  background: darkcyan;
-  border: 1px solid #005656;
-  border-radius: 5px;
-  padding: 5px;
-  white-space: nowrap;
+.rc-slider-vertical .rc-slider-mark {
+  transform: translateX(-500%);
 }
 
-.painter_city_label{
-  font-family: Verdana, sans-serif;
-  font-size: 10px;
+div.mark123 {
   color: white;
-  white-space: nowrap;
-}
-
-.painter_river_label {
-  font-family: Verdana, sans-serif;
-  font-size: 10px;
-  color: white;
-  white-space: nowrap;
-}
-
-.theater_city_label{
-  font-family: Verdana, sans-serif;
-  font-size: 10px;
-  color: white;
-  white-space: nowrap;
-  text-align: center;
+  text-shadow: 1px 1px 2px #282727, 0 0 1px #1a1a1a, 0 0 0.2px #1a1717;
 }
