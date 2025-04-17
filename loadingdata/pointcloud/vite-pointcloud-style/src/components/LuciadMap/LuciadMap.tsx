@@ -101,7 +101,6 @@ function LoadWMS(map: WebGLMap) {
 // Adding a HSPC Layer
 function LoadHSPCLayer(map: WebGLMap) {
     const url = "https://datamonster.myvr.net/mMap/data/pointcloud/APR/SanFrancisco/tree.hspc";
-    // const url = "https://trident-lf.luciad.com/hspc/v12/1815encoded/tree.hspc"
 
     return new Promise<TileSet3DLayer>((resolve)=>{
         // Create the model
@@ -143,10 +142,11 @@ function createPointStyle(range: { min: number; max: number }): PointCloudStyle 
     });
 
     return {
-        gapFill: 2,
+        gapFill: 3,
         pointSize:{
-            mode: ScalingMode.PIXEL_SIZE,
-            pixelSize: 2
+            mode: ScalingMode.ADAPTIVE_WORLD_SIZE,
+            minimumPixelSize: 2,
+            worldScale: 1
         },
         colorExpression: mixmap(heightFraction, colorMix)
     }
