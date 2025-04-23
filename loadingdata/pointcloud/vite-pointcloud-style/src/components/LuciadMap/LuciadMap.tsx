@@ -19,12 +19,15 @@ import {PointCloudStyle} from "@luciad/ria/view/style/PointCloudStyle.js";
 import {ScalingMode} from "@luciad/ria/view/style/ScalingMode.js";
 import {Bounds} from "@luciad/ria/shape/Bounds.js";
 import {Point} from "@luciad/ria/shape/Point.js";
-import {CoordinateReference} from "@luciad/ria/reference/CoordinateReference.js";
-import {createTransformation} from "@luciad/ria/transformation/TransformationFactory.js";
-import Slider from "rc-slider";
 import 'rc-slider/assets/index.css';
 import "./LuciadMap.css";
 import {throttle} from "lodash";
+import {CustomRange} from "../CustomRange/CustomRange.tsx";
+import {
+    calculateDistanceToEarthCenter,
+    calculateRangeDistanceToEarthCenter,
+    calculateRangeMeterEllipsoidalHeight
+} from "../../modules/geotools/GeoToolsLib.ts";
 
 
 const COLOR_SPAN_HEIGHT= [
@@ -35,7 +38,7 @@ const COLOR_SPAN_HEIGHT= [
     "#FFFF00", /* Medium Elevation */
     "#FFA500", /* High Elevation */
     "#FF0000", /* Very High Elevation */
-    "#FFFFFF"  /* Mountain Peaks */
+    // "#FFFFFF"  /* Mountain Peaks */
 ];
 
 const TargetHSPCLayerID = "TARGET-HSPC-LAYER";
@@ -59,10 +62,7 @@ export const LuciadMap: React.FC = () => {
     const nativeMap = useRef(null as null | WebGLMap);
     const pointCloudStyle = useRef(null as null |  PointCloudStyle);
     const [rangeWithExpressions, setRangeWithExpressions] = useState(null as null |  RangeWithExpressions);
-    const [minValue, setMinValue ] = useState(0);
-    const [maxValue, setMaxValue ] = useState(0);
-  //  const [range, setRange ] = useState({minimum: -100, maximum: 100});
-
+    const [sliderValues, setSliderValues] = useState({min:-10, max: 10});
 
     useEffect(()=>{
         // Initialize Map
@@ -77,8 +77,7 @@ export const LuciadMap: React.FC = () => {
                 const oneTenth = (result.range.ellipsoidHeight.max - result.range.ellipsoidHeight.min)/100;
                 const min = result.range.ellipsoidHeight.min + oneTenth * 50;
                 const max = result.range.ellipsoidHeight.min + oneTenth * 55;
-                setMinValue(min);
-                setMaxValue(max);
+                setSliderValues({min, max})
                 result.range.minParameter.value = calculateDistanceToEarthCenter(result.range.focusPoint_EPSG_4979, min);
                 result.range.maxParameter.value = calculateDistanceToEarthCenter(result.range.focusPoint_EPSG_4979, max);
                 hspcLayer.pointCloudStyle = pointCloudStyle.current;
@@ -105,19 +104,6 @@ export const LuciadMap: React.FC = () => {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const MyHandle = (props: any) => {
-        const handleStyle = { bottom: `${props.offset}%`};
-        let value = 0;
-        if (rangeWithExpressions) {
-            value = props.value;
-        }
-        return(
-            <div className="MyHandle" style={handleStyle} key={"rc-slider"+props.index}>
-                { props.dragging && <div className="bubble">{value}</div> }
-            </div>
-        )
-    }
 
     const throttleUpdate = throttle((value: number[])=>{
         if (rangeWithExpressions) {
@@ -127,8 +113,7 @@ export const LuciadMap: React.FC = () => {
     }, 1000, {trailing: false} );
 
     const update = (value: number[])=>{
-        setMinValue(value[0]);
-        setMaxValue(value[1]);
+        setSliderValues({min:value[0], max: value[1]});
         throttleUpdate(value);
     }
 
@@ -139,18 +124,13 @@ export const LuciadMap: React.FC = () => {
         </div>
         <div className="vertical-slider">
             { rangeWithExpressions &&
-                <Slider.Range vertical={true} allowCross={false}
-                              min={rangeWithExpressions.ellipsoidHeight.min }
-                              max={rangeWithExpressions.ellipsoidHeight.max }
-                        value={[minValue, maxValue]}
-                              step={0.1}
-                        marks={{
-                            [rangeWithExpressions.ellipsoidHeight.min]: <div className="mark123">{`${rangeWithExpressions.ellipsoidHeight.min.toFixed(2)}`}</div>,
-                            [(rangeWithExpressions.ellipsoidHeight.max+rangeWithExpressions.ellipsoidHeight.min)*0.5]: <div className="mark123">{`Center`}</div>,
-                            [rangeWithExpressions.ellipsoidHeight.max]: <div className="mark123">{`${rangeWithExpressions.ellipsoidHeight.max.toFixed(2)}`}</div>,
-                        }}
-                        handle={MyHandle}
-                        onChange={update}/>
+                <CustomRange
+                    min={rangeWithExpressions.ellipsoidHeight.min}
+                    max={rangeWithExpressions.ellipsoidHeight.max}
+                    onChange={update}
+                    values={[sliderValues.min, sliderValues.max]}
+                    step={0.01}
+                />
             }
         </div>
     </div>)
@@ -249,89 +229,6 @@ function createPointStyle(bounds: Bounds): {
     }
 }
 
-function calculateRangeDistanceToEarthCenter(boundsIn: Bounds) {
-    // Reproject the bounds to the desired coordinate system
-    const bounds = reprojectBounds(boundsIn, getReference("EPSG:4978")) as Bounds;
-
-    // Pre-compute the corner coordinates
-    const corners = [
-        { x: bounds.x, y: bounds.y, z: bounds.z },
-        { x: bounds.x + bounds.width, y: bounds.y, z: bounds.z },
-        { x: bounds.x, y: bounds.y + bounds.height, z: bounds.z },
-        { x: bounds.x, y: bounds.y, z: bounds.z + bounds.depth },
-        { x: bounds.x + bounds.width, y: bounds.y + bounds.height, z: bounds.z },
-        { x: bounds.x + bounds.width, y: bounds.y, z: bounds.z + bounds.depth },
-        { x: bounds.x, y: bounds.y + bounds.height, z: bounds.z + bounds.depth },
-        { x: bounds.x + bounds.width, y: bounds.y + bounds.height, z: bounds.z + bounds.depth }
-    ];
-
-    let minDistanceSquared = Infinity;
-    let maxDistanceSquared = -Infinity;
-
-    for (const corner of corners) {
-        const distanceSquared = corner.x * corner.x + corner.y * corner.y + corner.z * corner.z;
-        minDistanceSquared = Math.min(minDistanceSquared, distanceSquared);
-        maxDistanceSquared = Math.max(maxDistanceSquared, distanceSquared);
-    }
-
-    return {
-        min: Math.sqrt(minDistanceSquared),
-        max: Math.sqrt(maxDistanceSquared)
-    };
-}
-
-function calculateDistanceToEarthCenter(p: Point, height: number): number {
-    const pointIn = p.copy();
-    pointIn.z = height;
-    // Reproject the point to the desired coordinate system;
-    const point = reprojectPoint(pointIn, getReference("EPSG:4978")) as Point;
-
-    // Calculate the distance from the Earth's center using the Euclidean distance formula
-    return Math.sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
-}
-
-function calculateRangeMeterEllipsoidalHeight(boundsIn: Bounds) {
-    const bounds =  reprojectBounds(boundsIn, getReference("EPSG:4979")) as Bounds;
-    const a = bounds.z;
-    const b = bounds.z+bounds.depth;
-    return {
-        bounds,
-        min: Math.min(a,b),
-        max: Math.max(a,b)
-    };
-}
-
-function reprojectBounds(shape: Bounds, targetReference?:  CoordinateReference) {
-    // When no targetProjection Specified then default to CRS:84 (EPSG:4326);
-    targetReference =  targetReference ?  targetReference : getReference("EPSG:4326");
-    const sourceReference = shape.reference;
-    if ( sourceReference?.equals(targetReference)) {
-        return shape;
-    } else {
-        const transformer = createTransformation(sourceReference!, targetReference);
-        try {
-            return transformer.transformBounds(shape);
-        } catch (e) {
-            return null;
-        }
-    }
-}
-
-function reprojectPoint(point: Point, targetReference?:  CoordinateReference) {
-    // When no targetProjection Specified then default to CRS:84 (EPSG:4326);
-    targetReference =  targetReference ?  targetReference : getReference("EPSG:4326");
-    const sourceReference = point.reference;
-    if ( sourceReference?.equals(targetReference)) {
-        return point;
-    } else {
-        const transformer = createTransformation(sourceReference!, targetReference);
-        try {
-            return transformer.transform(point);
-        } catch (e) {
-            return null;
-        }
-    }
-}
 
 
 
