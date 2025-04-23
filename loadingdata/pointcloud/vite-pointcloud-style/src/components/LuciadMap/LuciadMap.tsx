@@ -19,14 +19,13 @@ import {PointCloudStyle} from "@luciad/ria/view/style/PointCloudStyle.js";
 import {ScalingMode} from "@luciad/ria/view/style/ScalingMode.js";
 import {Bounds} from "@luciad/ria/shape/Bounds.js";
 import {Point} from "@luciad/ria/shape/Point.js";
-import 'rc-slider/assets/index.css';
-import "./LuciadMap.css";
 import {throttle} from "lodash";
 import {CustomRange} from "../CustomRange/CustomRange.tsx";
 import {
     calculateDistanceToEarthCenter,
     calculateRangeMeterEllipsoidalHeight
 } from "../../modules/geotools/GeoToolsLib.ts";
+import "./LuciadMap.css";
 
 
 const COLOR_SPAN_HEIGHT= [
@@ -131,8 +130,7 @@ export const LuciadMap: React.FC = () => {
     </div>)
 }
 
-
-
+// Load WMS Layer
 function LoadWMS(map: WebGLMap) {
     const wmsUrl = "https://sampleservices.luciad.com/wms";
 
@@ -170,10 +168,9 @@ function LoadHSPCLayer(map: WebGLMap) {
         });
 
     })
-
-
 }
 
+//  Defines a style to style a PointCloud
 function createPointStyle(bounds: Bounds): {
     pointCloudStyle: PointCloudStyle;
     range: RangeWithExpressions;
