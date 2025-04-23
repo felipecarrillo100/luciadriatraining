@@ -5,43 +5,11 @@ import {CoordinateReference} from "@luciad/ria/reference/CoordinateReference.js"
 import {createTransformation} from "@luciad/ria/transformation/TransformationFactory.js";
 
 
-// Inspect the 8 corners of the bounding 3D box to determine the minimum and maximum distance to the center of the Earth
-export function calculateRangeDistanceToEarthCenter(boundsIn: Bounds) {
-    // Reproject the bounds to the desired coordinate system
-    const bounds = reprojectBounds(boundsIn, getReference("EPSG:4978")) as Bounds;
-
-    // Pre-compute the corner coordinates
-    const corners = [
-        { x: bounds.x, y: bounds.y, z: bounds.z },
-        { x: bounds.x + bounds.width, y: bounds.y, z: bounds.z },
-        { x: bounds.x, y: bounds.y + bounds.height, z: bounds.z },
-        { x: bounds.x, y: bounds.y, z: bounds.z + bounds.depth },
-        { x: bounds.x + bounds.width, y: bounds.y + bounds.height, z: bounds.z },
-        { x: bounds.x + bounds.width, y: bounds.y, z: bounds.z + bounds.depth },
-        { x: bounds.x, y: bounds.y + bounds.height, z: bounds.z + bounds.depth },
-        { x: bounds.x + bounds.width, y: bounds.y + bounds.height, z: bounds.z + bounds.depth }
-    ];
-
-    let minDistanceSquared = Infinity;
-    let maxDistanceSquared = -Infinity;
-
-    for (const corner of corners) {
-        const distanceSquared = corner.x * corner.x + corner.y * corner.y + corner.z * corner.z;
-        minDistanceSquared = Math.min(minDistanceSquared, distanceSquared);
-        maxDistanceSquared = Math.max(maxDistanceSquared, distanceSquared);
-    }
-
-    return {
-        min: Math.sqrt(minDistanceSquared),
-        max: Math.sqrt(maxDistanceSquared)
-    };
-}
-
-// Inspect the 8 corners of the bounding 3D box to determine the minimum and maximum distance to the center of the Earth
+// Inspect the bounding box to get minimum and maximum height in meters over the ellipsoid
 export function calculateRangeMeterEllipsoidalHeight(boundsIn: Bounds) {
     const bounds =  reprojectBounds(boundsIn, getReference("EPSG:4979")) as Bounds;
     const a = bounds.z;
-    const b = bounds.z+bounds.depth;
+    const b = bounds.z + bounds.depth;
     return {
         bounds,
         min: Math.min(a,b),

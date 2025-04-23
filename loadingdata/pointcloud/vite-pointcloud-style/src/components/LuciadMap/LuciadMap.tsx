@@ -25,7 +25,6 @@ import {throttle} from "lodash";
 import {CustomRange} from "../CustomRange/CustomRange.tsx";
 import {
     calculateDistanceToEarthCenter,
-    calculateRangeDistanceToEarthCenter,
     calculateRangeMeterEllipsoidalHeight
 } from "../../modules/geotools/GeoToolsLib.ts";
 
@@ -44,10 +43,6 @@ const COLOR_SPAN_HEIGHT= [
 const TargetHSPCLayerID = "TARGET-HSPC-LAYER";
 
 interface RangeWithExpressions {
-    earthCenterDistance: {
-        min: number;
-        max: number;
-    };
     ellipsoidHeight: {
         min: number;
         max: number;
@@ -183,16 +178,11 @@ function createPointStyle(bounds: Bounds): {
     pointCloudStyle: PointCloudStyle;
     range: RangeWithExpressions;
 }  {
-    const range  = calculateRangeDistanceToEarthCenter(bounds);
     const ellipsoidHeightBounds = calculateRangeMeterEllipsoidalHeight(bounds);
+    const {focusPoint} = ellipsoidHeightBounds.bounds;
 
-    const averageHeight = range.min + (range.max-range.min) / 2;
-
-    const min = Math.round(averageHeight - 20);
-    const max = Math.round(averageHeight + 300);
-
-    const minParameter = numberParameter(min);
-    const maxParameter = numberParameter(max);
+    const minParameter = numberParameter(calculateDistanceToEarthCenter(focusPoint, ellipsoidHeightBounds.min));
+    const maxParameter = numberParameter(calculateDistanceToEarthCenter(focusPoint, ellipsoidHeightBounds.max));
 
     const position = positionAttribute();
     const earthCenter = pointParameter({x: 0, y: 0, z: 0});
@@ -214,11 +204,7 @@ function createPointStyle(bounds: Bounds): {
             colorExpression: mixmap(heightFraction, colorMix)
         },
         range: {
-            focusPoint_EPSG_4979: ellipsoidHeightBounds.bounds.focusPoint,
-            earthCenterDistance: {
-                min: range.min,
-                max: range.max,
-            },
+            focusPoint_EPSG_4979: focusPoint,
             ellipsoidHeight: {
                 min: ellipsoidHeightBounds.min,
                 max: ellipsoidHeightBounds.max,
