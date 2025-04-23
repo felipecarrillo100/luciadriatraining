@@ -10,18 +10,21 @@ import {
     distance,
     fraction,
     mixmap,
-    numberParameter, ParameterExpression,
+    numberParameter,
+    ParameterExpression,
     pointParameter,
     positionAttribute
 } from "@luciad/ria/util/expression/ExpressionFactory.js";
 import {PointCloudStyle} from "@luciad/ria/view/style/PointCloudStyle.js";
 import {ScalingMode} from "@luciad/ria/view/style/ScalingMode.js";
 import {Bounds} from "@luciad/ria/shape/Bounds.js";
+import {Point} from "@luciad/ria/shape/Point.js";
 import {CoordinateReference} from "@luciad/ria/reference/CoordinateReference.js";
 import {createTransformation} from "@luciad/ria/transformation/TransformationFactory.js";
 import Slider from "rc-slider";
 import 'rc-slider/assets/index.css';
 import "./LuciadMap.css";
+import {throttle} from "lodash";
 
 
 const COLOR_SPAN_HEIGHT= [
@@ -38,8 +41,15 @@ const COLOR_SPAN_HEIGHT= [
 const TargetHSPCLayerID = "TARGET-HSPC-LAYER";
 
 interface RangeWithExpressions {
-    min: number;
-    max: number;
+    earthCenterDistance: {
+        min: number;
+        max: number;
+    };
+    ellipsoidHeight: {
+        min: number;
+        max: number;
+    },
+    focusPoint_EPSG_4979: Point;
     minParameter: ParameterExpression<number>;
     maxParameter: ParameterExpression<number>;
 }
@@ -51,6 +61,7 @@ export const LuciadMap: React.FC = () => {
     const [rangeWithExpressions, setRangeWithExpressions] = useState(null as null |  RangeWithExpressions);
     const [minValue, setMinValue ] = useState(0);
     const [maxValue, setMaxValue ] = useState(0);
+  //  const [range, setRange ] = useState({minimum: -100, maximum: 100});
 
 
     useEffect(()=>{
@@ -63,8 +74,13 @@ export const LuciadMap: React.FC = () => {
                 const result = createPointStyle(hspcLayer.bounds);
                 pointCloudStyle.current = result.pointCloudStyle;
                 setRangeWithExpressions(result.range);
-                setMinValue(result.range.minParameter.value);
-                setMaxValue(result.range.maxParameter.value);
+                const oneTenth = (result.range.ellipsoidHeight.max - result.range.ellipsoidHeight.min)/100;
+                const min = result.range.ellipsoidHeight.min + oneTenth * 50;
+                const max = result.range.ellipsoidHeight.min + oneTenth * 55;
+                setMinValue(min);
+                setMaxValue(max);
+                result.range.minParameter.value = calculateDistanceToEarthCenter(result.range.focusPoint_EPSG_4979, min);
+                result.range.maxParameter.value = calculateDistanceToEarthCenter(result.range.focusPoint_EPSG_4979, max);
                 hspcLayer.pointCloudStyle = pointCloudStyle.current;
             });
         }
@@ -89,6 +105,33 @@ export const LuciadMap: React.FC = () => {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const MyHandle = (props: any) => {
+        const handleStyle = { bottom: `${props.offset}%`};
+        let value = 0;
+        if (rangeWithExpressions) {
+            value = props.value;
+        }
+        return(
+            <div className="MyHandle" style={handleStyle} key={"rc-slider"+props.index}>
+                { props.dragging && <div className="bubble">{value}</div> }
+            </div>
+        )
+    }
+
+    const throttleUpdate = throttle((value: number[])=>{
+        if (rangeWithExpressions) {
+            rangeWithExpressions.minParameter.value = calculateDistanceToEarthCenter(rangeWithExpressions.focusPoint_EPSG_4979, value[0]);
+            rangeWithExpressions.maxParameter.value = calculateDistanceToEarthCenter(rangeWithExpressions.focusPoint_EPSG_4979, value[1]);
+        }
+    }, 1000, {trailing: false} );
+
+    const update = (value: number[])=>{
+        setMinValue(value[0]);
+        setMaxValue(value[1]);
+        throttleUpdate(value);
+    }
+
     return (<div className="LuciadMap" >
         <div ref={divElement} className="map"/>
         <div className="button-bar">
@@ -96,30 +139,18 @@ export const LuciadMap: React.FC = () => {
         </div>
         <div className="vertical-slider">
             { rangeWithExpressions &&
-                <Slider range={true}  vertical={true} allowCross={false} min={rangeWithExpressions.min} max={rangeWithExpressions.max}
+                <Slider.Range vertical={true} allowCross={false}
+                              min={rangeWithExpressions.ellipsoidHeight.min }
+                              max={rangeWithExpressions.ellipsoidHeight.max }
                         value={[minValue, maxValue]}
-                        // handleRender={(node, handleProps) => {
-                        //     return (
-                        //         <Tooltip
-                        //             overlayInnerStyle={{ minHeight: "auto" }}
-                        //             overlay={"Height: " + (handleProps.value - rangeWithExpressions.min + rangeWithExpressions.seaLevel.min)}
-                        //             placement="bottom"
-                        //         >
-                        //             {node}
-                        //         </Tooltip>
-                        //     );
-                        // }}
+                              step={0.1}
                         marks={{
-                            [rangeWithExpressions.min]: <div className="mark123">{`${Math.round(-(rangeWithExpressions.max-rangeWithExpressions.min)/2)}`}</div>,
-                            [rangeWithExpressions.max]: <div className="mark123">{`${Math.round(rangeWithExpressions.max-rangeWithExpressions.min-(rangeWithExpressions.max-rangeWithExpressions.min)/2)}`}</div>,
+                            [rangeWithExpressions.ellipsoidHeight.min]: <div className="mark123">{`${rangeWithExpressions.ellipsoidHeight.min.toFixed(2)}`}</div>,
+                            [(rangeWithExpressions.ellipsoidHeight.max+rangeWithExpressions.ellipsoidHeight.min)*0.5]: <div className="mark123">{`Center`}</div>,
+                            [rangeWithExpressions.ellipsoidHeight.max]: <div className="mark123">{`${rangeWithExpressions.ellipsoidHeight.max.toFixed(2)}`}</div>,
                         }}
-                        onChange={(value: any)=>{
-                            setMinValue(value[0]);
-                            rangeWithExpressions.minParameter.value = value[0];
-                            setMaxValue(value[1]);
-                            rangeWithExpressions.maxParameter.value = value[1];
-                        }
-                }/>
+                        handle={MyHandle}
+                        onChange={update}/>
             }
         </div>
     </div>)
@@ -172,8 +203,8 @@ function createPointStyle(bounds: Bounds): {
     pointCloudStyle: PointCloudStyle;
     range: RangeWithExpressions;
 }  {
-    const range  = calculateFangeDistanceToEarthCenter(bounds);
-    // const rangeSeaLevel = calculateRangeMeterFromSeaLevel(bounds);
+    const range  = calculateRangeDistanceToEarthCenter(bounds);
+    const ellipsoidHeightBounds = calculateRangeMeterEllipsoidalHeight(bounds);
 
     const averageHeight = range.min + (range.max-range.min) / 2;
 
@@ -194,7 +225,7 @@ function createPointStyle(bounds: Bounds): {
 
     return {
         pointCloudStyle: {
-            gapFill: 3,
+            // gapFill: 3,   // Too heavy style for Intel Integrated Graphic cards
             pointSize: {
                 mode: ScalingMode.ADAPTIVE_WORLD_SIZE,
                 minimumPixelSize: 2,
@@ -203,34 +234,72 @@ function createPointStyle(bounds: Bounds): {
             colorExpression: mixmap(heightFraction, colorMix)
         },
         range: {
-            min: range.min,
-            max: range.max,
+            focusPoint_EPSG_4979: ellipsoidHeightBounds.bounds.focusPoint,
+            earthCenterDistance: {
+                min: range.min,
+                max: range.max,
+            },
+            ellipsoidHeight: {
+                min: ellipsoidHeightBounds.min,
+                max: ellipsoidHeightBounds.max,
+            },
             minParameter,
             maxParameter
         }
     }
 }
 
-
-function calculateFangeDistanceToEarthCenter(boundsIn: Bounds) {
+function calculateRangeDistanceToEarthCenter(boundsIn: Bounds) {
+    // Reproject the bounds to the desired coordinate system
     const bounds = reprojectBounds(boundsIn, getReference("EPSG:4978")) as Bounds;
-    const a =  Math.sqrt(bounds.x * bounds.x + bounds.y * bounds.y + bounds.z * bounds.z);
-    const b = Math.sqrt((bounds.x+bounds.width) * (bounds.x+bounds.width) + (bounds.y+bounds.height) * (bounds.y+bounds.height) + (bounds.z+bounds.depth) * (bounds.z+bounds.depth));
+
+    // Pre-compute the corner coordinates
+    const corners = [
+        { x: bounds.x, y: bounds.y, z: bounds.z },
+        { x: bounds.x + bounds.width, y: bounds.y, z: bounds.z },
+        { x: bounds.x, y: bounds.y + bounds.height, z: bounds.z },
+        { x: bounds.x, y: bounds.y, z: bounds.z + bounds.depth },
+        { x: bounds.x + bounds.width, y: bounds.y + bounds.height, z: bounds.z },
+        { x: bounds.x + bounds.width, y: bounds.y, z: bounds.z + bounds.depth },
+        { x: bounds.x, y: bounds.y + bounds.height, z: bounds.z + bounds.depth },
+        { x: bounds.x + bounds.width, y: bounds.y + bounds.height, z: bounds.z + bounds.depth }
+    ];
+
+    let minDistanceSquared = Infinity;
+    let maxDistanceSquared = -Infinity;
+
+    for (const corner of corners) {
+        const distanceSquared = corner.x * corner.x + corner.y * corner.y + corner.z * corner.z;
+        minDistanceSquared = Math.min(minDistanceSquared, distanceSquared);
+        maxDistanceSquared = Math.max(maxDistanceSquared, distanceSquared);
+    }
+
     return {
+        min: Math.sqrt(minDistanceSquared),
+        max: Math.sqrt(maxDistanceSquared)
+    };
+}
+
+function calculateDistanceToEarthCenter(p: Point, height: number): number {
+    const pointIn = p.copy();
+    pointIn.z = height;
+    // Reproject the point to the desired coordinate system;
+    const point = reprojectPoint(pointIn, getReference("EPSG:4978")) as Point;
+
+    // Calculate the distance from the Earth's center using the Euclidean distance formula
+    return Math.sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
+}
+
+function calculateRangeMeterEllipsoidalHeight(boundsIn: Bounds) {
+    const bounds =  reprojectBounds(boundsIn, getReference("EPSG:4979")) as Bounds;
+    const a = bounds.z;
+    const b = bounds.z+bounds.depth;
+    return {
+        bounds,
         min: Math.min(a,b),
         max: Math.max(a,b)
     };
 }
-
-// function calculateRangeMeterFromSeaLevel(boundsIn: Bounds) {
-//     const bounds =  reprojectBounds(boundsIn) as Bounds;
-//     const a = bounds.z;
-//     const b = bounds.z+bounds.depth;
-//     return {
-//         min: Math.min(a,b),
-//         max: Math.max(a,b)
-//     };
-// }
 
 function reprojectBounds(shape: Bounds, targetReference?:  CoordinateReference) {
     // When no targetProjection Specified then default to CRS:84 (EPSG:4326);
@@ -247,5 +316,23 @@ function reprojectBounds(shape: Bounds, targetReference?:  CoordinateReference) 
         }
     }
 }
+
+function reprojectPoint(point: Point, targetReference?:  CoordinateReference) {
+    // When no targetProjection Specified then default to CRS:84 (EPSG:4326);
+    targetReference =  targetReference ?  targetReference : getReference("EPSG:4326");
+    const sourceReference = point.reference;
+    if ( sourceReference?.equals(targetReference)) {
+        return point;
+    } else {
+        const transformer = createTransformation(sourceReference!, targetReference);
+        try {
+            return transformer.transform(point);
+        } catch (e) {
+            return null;
+        }
+    }
+}
+
+
 
 
