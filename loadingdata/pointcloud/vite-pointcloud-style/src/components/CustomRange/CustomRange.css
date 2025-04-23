@@ -40,14 +40,14 @@
     border-bottom: 5px solid transparent;
 }
 
-.mark-point-cloud-scale {
+.rc-slider .mark-point-cloud-scale {
     color: black;
     background: white;
     border-radius: 5px;
     padding: 2px;
 }
 
-.mark-point-cloud-scale:before {
+.rc-slider .mark-point-cloud-scale:before {
     content: "";
     position: absolute;
     top: 50%;
