@@ -59,6 +59,7 @@ export const LuciadMap: React.FC = () => {
         // Initialize Map
         if (divElement.current!==null) {
             nativeMap.current = new WebGLMap(divElement.current, {reference: getReference("EPSG:4978")});
+            nativeMap.current.mapNavigator.constraints.above!.minAltitude = 0.5;
             LoadWMS(nativeMap.current);
             LoadMeshLayer(nativeMap.current).then(meshLayer=> {
                 // Create a style for this layer taking into account the min/max from the bounds
@@ -148,7 +149,8 @@ function LoadWMS(map: WebGLMap) {
 
 // Adding a Memory Store
 function LoadMeshLayer(map: WebGLMap) {
-    const url = "https://sampledata.luciad.com/data/ogc3dtiles/outback_PBR_Draco/tileset.json";
+  //  const url = "https://sampledata.luciad.com/data/ogc3dtiles/outback_PBR_Draco/tileset.json";
+    const url = "https://sampleservices.luciad.com/ogc/3dtiles/marseille-mesh/tileset.json";
 
     return new Promise<TileSet3DLayer>(resolve=>{
         OGC3DTilesModel.create(url, {}).then((model:OGC3DTilesModel)=>{
