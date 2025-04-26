@@ -149,7 +149,8 @@ function LoadWMS(map: WebGLMap) {
 
 // Adding a HSPC Layer
 function LoadHSPCLayer(map: WebGLMap) {
-    const url = "https://datamonster.myvr.net/mMap/data/pointcloud/APR/SanFrancisco/tree.hspc";
+    // const url = "https://datamonster.myvr.net/mMap/data/pointcloud/APR/SanFrancisco/tree.hspc";
+    const url = "https://demo.luciad.com/PortAIDemo/hspc/limerick/tree.hspc";
 
     return new Promise<TileSet3DLayer>((resolve)=>{
         // Create the model
@@ -181,6 +182,7 @@ function createPointStyle(bounds: Bounds): {
     const minParameter = numberParameter(calculateDistanceToEarthCenter(focusPoint, ellipsoidHeightBounds.min));
     const maxParameter = numberParameter(calculateDistanceToEarthCenter(focusPoint, ellipsoidHeightBounds.max));
 
+    // Uses absolute position of the point as value to evaluate in the expressions
     const position = positionAttribute();
     const earthCenter = pointParameter({x: 0, y: 0, z: 0});
     const distanceToCenter = distance(position, earthCenter);

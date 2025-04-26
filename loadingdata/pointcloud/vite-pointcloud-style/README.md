@@ -26,7 +26,7 @@ Here some examples:
 - Hide a point cloud or a mesh if it is outside/inside a bbox
 - Paint a point cloud based on the value of a property.
 
-In the next example using visibilityExpression all points located with in a minimum and maximum height are painted:
+In the next example using colorExpression. Points within a minimum and maximum are colored using the gradient:
 ```Typescript
 import {
     color,
@@ -49,6 +49,7 @@ const COLOR_SPAN_HEIGHT= [
 const minParameter = numberParameter(65000);
 const maxParameter = numberParameter(65100);
 
+// Uses absolute position of the point as value to evaluate in the expressions
 const position = positionAttribute();
 const earthCenter = pointParameter({x: 0, y: 0, z: 0});
 
