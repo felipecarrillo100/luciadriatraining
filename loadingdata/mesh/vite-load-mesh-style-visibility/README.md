@@ -27,7 +27,13 @@ Here some examples:
 - Hide a point cloud or a mesh if it is outside/inside a bbox
 - Paint a point cloud based on the value of a property.
 
-In the next example using visibilityExpression all points located with in a minimum and maximum height are painted:
+### Visibility (Filter) on `positionAttribute()`
+
+In the next example, we will style the point cloud using visibilityExpression.
+Points within a minimum and maximum height are visible while points out of the range are invisible.
+
+The position of the point will be determined by the `positionAttribute()` which returns the absolution position of the point with respect to the earths center.
+
 ```Typescript
 import * as ExpressionFactory from "@luciad/ria/util/expression/ExpressionFactory.js";
 import{
