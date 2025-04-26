@@ -168,11 +168,14 @@ function createPointStyle(): {
     pointCloudStyle: PointCloudStyle;
     range: RangeWithExpressions;
 } {
+    // Range (8 bits)
     const minParameter = numberParameter(0);
     const maxParameter = numberParameter(256);
 
+    // Coloring on attribute("Intensity")
     const intensityFraction = fraction(attribute("Intensity"), minParameter!, maxParameter!);
 
+    // Create Color Map as an array of color Expressions
     const colorMix = COLOR_SPAN_INTENSITY.map(c => {
         return color(c);
     });

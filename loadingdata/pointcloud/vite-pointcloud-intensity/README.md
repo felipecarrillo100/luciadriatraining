@@ -26,47 +26,41 @@ Here some examples:
 - Hide a point cloud or a mesh if it is outside/inside a bbox
 - Paint a point cloud based on the value of a property.
 
-In the next example using visibilityExpression all points located with in a minimum and maximum height are painted:
+In the next example using colorExpression we will color the point clouds according to the property "Intensity"
+
 ```Typescript
 import {
+    attribute,
     color,
-    distance, fraction, mixmap,
-    numberParameter, ParameterExpression,
-    pointParameter,
-    positionAttribute
+    fraction,
+    mixmap,
+    numberParameter,
+    ParameterExpression,
 } from "@luciad/ria/util/expression/ExpressionFactory.js";
 
-const COLOR_SPAN_HEIGHT= [
-    "#000080", 
-    "#00BFFF", 
-    "#00FF00", 
-    "#ADFF2F", 
-    "#FFFF00", 
-    "#FFA500", 
-    "#FF0000", 
+const COLOR_SPAN_INTENSITY = [
+    "#001F3F",
+    "#0074D9",
+    "#7FDBFF",
+    "#B3E5FC",
+    "#E0F7FA"
 ];
 
-const minParameter = numberParameter(65000);
-const maxParameter = numberParameter(65100);
+// Range (8 bits)
+const minParameter = numberParameter(0);
+const maxParameter = numberParameter(256);
 
-const position = positionAttribute();
-const earthCenter = pointParameter({x: 0, y: 0, z: 0});
+// Coloring on attribute("Intensity")
+const intensityFraction = fraction(attribute("Intensity"), minParameter!, maxParameter!);
 
-// Distance to the center of the earth in meters
-const distanceToCenter = distance(position, earthCenter);
-
-// Returns a value 0, 1 
-const heightFraction = fraction(distanceToCenter, minParameter, maxParameter);
-
-// Create an array of color as Expressions
-const colorMix = COLOR_SPAN_HEIGHT.map(c => {
+// Create Color Map as an array of color Expressions
+const colorMix = COLOR_SPAN_INTENSITY.map(c => {
     return color(c);
 });
-
 const pointCloudStyle = {
     // A color interpolating the color on the gradient colorMix where colorMix in an array of color expressions
     // heightFraction: from 0 to 1, 0 is the color[0], 1 is color[n], any value in between the color is interpolated in the gradient
-    colorExpression: mixmap(heightFraction, colorMix)
+    colorExpression: mixmap(intensityFraction, colorMix)
 };
 ```
 
