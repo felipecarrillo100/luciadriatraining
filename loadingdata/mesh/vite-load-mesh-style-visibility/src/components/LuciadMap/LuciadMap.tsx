@@ -146,8 +146,12 @@ function LoadMeshLayer(map: WebGLMap) {
             //Create a layer for the model
             const layer = new TileSet3DLayer(model, {
                 label: "Mesh Layer",
-                id: TargetMeshLayerID
+                id: TargetMeshLayerID,
+                idProperty: "FeatureID",
+                selectable: true
             });
+
+            console.log(model.modelDescriptor.properties);
 
             //Add the model to the map
             map.layerTree.addChild(layer);
