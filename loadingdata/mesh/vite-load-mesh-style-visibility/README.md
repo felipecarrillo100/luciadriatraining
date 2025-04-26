@@ -29,10 +29,10 @@ Here some examples:
 
 ### Visibility (Filter) on `positionAttribute()`
 
-In the next example, we will style the point cloud using visibilityExpression.
-Points within a minimum and maximum height are visible while points out of the range are invisible.
+In the next example, we will style the mesh using visibilityExpression.
+Meshes within a minimum and maximum height are visible while points out of the range are invisible.
 
-The position of the point will be determined by the `positionAttribute()` which returns the absolution position of the point with respect to the earths center.
+The position of the mesh will be determined by the `positionAttribute()` which returns the absolution position of the mesh with respect to the earths center.
 
 ```Typescript
 import * as ExpressionFactory from "@luciad/ria/util/expression/ExpressionFactory.js";
