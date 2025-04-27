@@ -9,15 +9,23 @@ import "./LuciadMap.css";
 import {MeshStyle} from "@luciad/ria/view/style/MeshStyle.js";
 import * as ExpressionFactory from "@luciad/ria/util/expression/ExpressionFactory.js";
 import {
-    attribute,
-    numberParameter, ParameterExpression,
-
+    attribute, number, divide,
+    numberParameter, ParameterExpression, color, mixmap,
 } from "@luciad/ria/util/expression/ExpressionFactory.js";
 import {CustomRange} from "../CustomRange/CustomRange.tsx";
 import {throttle} from "lodash";
 
 
 const TargetMeshLayerID = "TARGET-MESH-LAYER";
+
+const COLOR_MAP = [
+    "#FF0000",
+    "#FFA500",
+    "#FFFF00",
+    "#008000",
+    "#0000FF",
+    "#800080"
+]
 
 interface RangeWithExpressions {
     rangeIdValue: {
@@ -129,8 +137,11 @@ function LoadWMS(map: WebGLMap) {
 
 // Adding a Memory Store
 function LoadMeshLayer(map: WebGLMap) {
-    const url = "https://sampledata.luciad.com/data/ogc3dtiles/outback_PBR_Draco/tileset.json";
+ //   const url = "https://sampledata.luciad.com/data/ogc3dtiles/outback_PBR_Draco/tileset.json";
  //   const url = "https://sampleservices.luciad.com/ogc/3dtiles/marseille-mesh/tileset.json";
+  //  const url = "https://sampledata.luciad.com/data/ogc3dtiles/ScienceCenter/tileset.json";
+  //  const url = "https://sampledata.luciad.com/data/ogc3dtiles/CommercialBuilding/tileset.json";
+    const url = "https://sampledata.luciad.com/data/ogc3dtiles/Clinic/tileset.json";
 
     return new Promise<TileSet3DLayer>(resolve=>{
         OGC3DTilesModel.create(url, {}).then((model:OGC3DTilesModel)=>{
@@ -165,13 +176,21 @@ function createMeshStyle(): {
     const maxParameter = numberParameter(6000);
 
     const propertyValue = attribute("FeatureID");
+    const colorMix = COLOR_MAP.map((c) => {            //  COLOR_MAP contains 6 colors
+        return color(c);
+    });
+
+    const divider = number(6000);
+    const index = divide(propertyValue, divider);
 
     return {
         meshStyle: {
-            visibilityExpression: ExpressionFactory.and(
-                ExpressionFactory.lt(minParameter, propertyValue),
-                ExpressionFactory.gt(maxParameter, propertyValue)
-            )
+            visibilityExpression: ExpressionFactory.between(
+                propertyValue,
+                minParameter, maxParameter
+            ),
+//            colorExpression: map(index, colorMix, ExpressionFactory.color('rgb(0,0,0)'))
+            colorExpression: mixmap(index, colorMix)
         },
         range: {
             rangeIdValue: {
