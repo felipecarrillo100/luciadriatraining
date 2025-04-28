@@ -14,6 +14,7 @@ import {CreateNewLayer} from '../../../modules/luciad/factories/CreateNewLayer';
 import {LayerTreeNode} from '@luciad/ria/view/LayerTreeNode.js';
 import {LayerGroup} from '@luciad/ria/view/LayerGroup.js';
 import {LayerFactory} from '../../../modules/luciad/factories/LayerFactory';
+import {MainMapService} from '../../services/main-map.service';
 
 console.log(GizmoCircles);
 console.log(GizmoArrows);
@@ -27,6 +28,7 @@ console.log(GizmoOctahedron);
   standalone: true,  // Make the component standalone
 })
 export class LuciadMapComponent implements OnInit, OnDestroy {
+  private mainMapService = inject(MainMapService);
   private mapLayerCommandsService = inject(MapLayerCommandsService);
   private destroyRef = inject(DestroyRef);
 
@@ -46,8 +48,7 @@ export class LuciadMapComponent implements OnInit, OnDestroy {
       });
 
     if (this.mapContainer && this.mapContainer.nativeElement !== null) {
-      this.map = new WebGLMap(this.mapContainer.nativeElement, {reference: "epsg:4978"});
-      this.InitializeMap(this.map);
+      this.InitializeMap();
     } else {
       console.error(`Can't find the ElementRef reference for mapContainer)`);
     }
@@ -59,8 +60,13 @@ export class LuciadMapComponent implements OnInit, OnDestroy {
   }
 
 
-  InitializeMap(map: WebGLMap) {
-
+  InitializeMap() {
+    if (this.mapContainer && this.mapContainer.nativeElement !== null) {
+      this.map = new WebGLMap(this.mapContainer.nativeElement, {reference: "epsg:4978"});
+      this.mainMapService.setMap(this.map);
+      this.mainMapService.setMapContainer(this.mapContainer);
+      this.mainMapService.setMapComponent(this);
+    }
   }
 
   private async processCommand(command: UICommand): Promise<boolean> {

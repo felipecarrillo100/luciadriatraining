@@ -1,0 +1,154 @@
+//  Label for Icons form map damage / sensors / documents
+$sensor-color-main: #9C61FF;
+$sensor-color-dim: #432575;
+$document-color-main: #44CEDF;
+$document-color-dim: #2E646B;
+$damage-color-main: #36B5FF;
+// $damage-color-dim: #214C65;
+$damage-color-dim: #2c749e;
+$mixed-color-main: #608AFF;
+$mixed-color-dim: #2A375A;
+
+.icon-label-container {
+  position: relative;
+  display: block;
+  margin-left: auto;
+  transform: translateY(10%);
+}
+
+@mixin custom-text-shadow($blur_weight: 0.2rem, $shadow_weight: 1px, $shadow_color:rgba(0,0,0,0.75)) {
+  text-shadow: 0 $shadow_weight $blur_weight $shadow_color, $shadow_weight 0 $blur_weight $shadow_color, 0 -1*$shadow_weight $blur_weight $shadow_color, -1*$shadow_weight 0 $blur_weight $shadow_color;
+}
+
+@mixin custom-text-border($border_color, $border_weight: 0.2rem, $blur_weight: 0.2rem, $shadow_weight: 0.1rem, $shadow_color:rgba(0,0,0,1.0)) {
+  -webkit-text-stroke: $border_weight $border_color;
+  text-stroke: $border_weight $border_color;
+  @include custom-text-shadow($blur_weight, $shadow_weight, $shadow_color);
+}
+
+.icon-sensor-label, .icon-damage-label, .icon-document-label {
+  font-weight: bold;
+  white-space: nowrap;
+  font-family: IBMPlexSansCond-Bold, sans-serif;
+  font-size: 0.8rem;
+  color: white;
+  letter-spacing: 0.05rem;
+  text-align: center;
+  transform: translateY(-100%);
+}
+
+.icon-sensor-label.outline-map-icon {
+  @include custom-text-border($sensor-color-dim);
+  transform: translateY(0%);
+}
+.icon-damage-label.outline-map-icon {
+  @include custom-text-border($damage-color-dim);
+  transform: translateY(0%);
+}
+.icon-document-label.outline-map-icon {
+  @include custom-text-border($document-color-dim);
+  transform: translateY(0%);
+}
+
+
+// Label for clusters
+.CustomClusteringPainter {
+  color: #dbe7e6;
+  border-radius: 100%;
+  background-color: transparent;
+  font-weight: bold;
+  text-shadow: 2px 2px 2px #000000;
+  font-size: 14px;
+  font-family: Verdana, sans-serif ;
+
+  &.selected {
+    font-size: 16px;
+  }
+}
+
+.icon-damage-projected-stationing {
+  background-color: rgba(24,48,86,0.63);
+  padding:4px;
+  font-weight: bold;
+  white-space: nowrap;
+  font-family: IBMPlexSansCond-Bold, sans-serif;
+  font-size: 0.7rem;
+  color: $document-color-main;
+  letter-spacing: 0.05rem;
+  text-align: center;
+  border-radius: 5px;
+}
+
+// item-detail-box-table
+.item-detail-box{
+  background: #4E93FF;
+  animation-name: hoverTooltip;
+  animation-duration: 0.5s;
+  animation-delay: 0.5s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  font-family: IBMPlexSansCond-SemiBold, sans-serif;
+  box-shadow: 0 0 6px 1px rgba(0,0,0,0.80);
+  border: 2px solid #FFFFFF;
+  border-radius: 2px;
+  line-height: 11px;
+  letter-spacing: 0.1px;
+  color: #FFFFFF;
+  border-collapse: collapse;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 2px 5px;
+  font-size: 10px;
+
+  tr{
+    margin: 6px;
+
+    td {
+      font-family: IBMPlexSansCond-SemiBold, sans-serif !important;
+
+      .item-title-label {
+        margin: 6px;
+        max-width: 25ch;
+        word-wrap: break-word;
+      }
+    }
+  }
+
+  img {
+    height: 18px !important;
+    width: 18px !important;
+  }
+
+  .damage-size {
+    margin: 6px;
+    font-family: IBMPlexSans-SemiBold,sans-serif;
+  }
+
+  .damage-grid-reference-id{
+    opacity: 0.75;
+    font-family: IBMPlexSans-SemiBold,sans-serif;
+    letter-spacing: 0.09px;
+    margin: 0 6px 0 2px;
+    text-align: center;
+  }
+}
+
+@keyframes hoverTooltip {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+// adding a triangle for tooltip with pseudo element
+.item-detail-box::after{
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #FFFFFF transparent transparent transparent;
+}

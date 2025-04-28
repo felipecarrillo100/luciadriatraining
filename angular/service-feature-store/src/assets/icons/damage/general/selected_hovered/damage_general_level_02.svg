@@ -1,0 +1,15 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+  "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg width="24" height="24">
+<g style="fill:black;fill-opacity:1;stroke:none;stroke-width:1;stroke-opacity:0;fill-rule:nonzero;">
+<g style="fill:none;fill-rule:evenodd;" transform="translate(-1,-1)">
+<g style="fill:#EAE500;stroke:gray;" transform="translate(-1,-1)">
+  <circle cx="13" cy="13" r="7.5"/>
+</g>
+<g style="fill:#FFF;stroke:#000;stroke-opacity:.8;" transform="translate(-1,-1)">
+  <circle cx="13" cy="13" r="3.5"/>
+</g>
+</g>
+</g>
+</svg>
