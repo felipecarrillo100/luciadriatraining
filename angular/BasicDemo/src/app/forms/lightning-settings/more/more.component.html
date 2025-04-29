@@ -1,0 +1,62 @@
+<h4>More options</h4>
+
+<h5>Focus Effects</h5>
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox"  name="enabled"  id="focus-enabled"
+         [ngModel]="mapEffects.focus.enabled"
+         (ngModelChange)="applyChange(mapEffects.focus.enabled=$event)"
+  >
+  <label class="form-check-label" for="focus-enabled">
+    Enable
+  </label>
+</div>
+
+<label for="distance-id" class="form-label">Distance: {{mapEffects.focus.distance}}</label>
+<input id="distance-id" type="range" class="form-range"  [min]="0" [max]="3000" step="1"
+       [ngModel]="mapEffects.focus.distance"
+       (ngModelChange)="applyChange(mapEffects.focus.distance=$event)"
+>
+
+<label for="range-id" class="form-label">Range: {{mapEffects.focus.range}}</label>
+<input id="range-id" type="range" class="form-range"  [min]="50" [max]="1500" step="1"
+       [ngModel]="mapEffects.focus.range"
+       (ngModelChange)="applyChange(mapEffects.focus.range=$event)"
+>
+
+
+<h5>Depth perception Effects</h5>
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox"  name="enabled"  id="eyeDomeLighting-enabled"
+         [ngModel]="mapEffects.eyeDomeLighting.enabled"
+         (ngModelChange)="applyChange(mapEffects.eyeDomeLighting.enabled=$event)"
+  >
+  <label class="form-check-label" for="eyeDomeLighting-enabled">
+    Enable
+  </label>
+</div>
+
+<label for="distance-id" class="form-label">Width: {{mapEffects.eyeDomeLighting.window}}</label>
+<input id="distance-id" type="range" class="form-range"  [min]="1" [max]="5" step="0.1"
+       [ngModel]="mapEffects.eyeDomeLighting.window"
+       (ngModelChange)="applyChange(mapEffects.eyeDomeLighting.window=$event)"
+>
+
+<label for="range-id" class="form-label">Strength: {{mapEffects.eyeDomeLighting.strength}}</label>
+<input id="range-id" type="range" class="form-range"  [min]="0.1" [max]="3" step="0.1"
+       [ngModel]="mapEffects.eyeDomeLighting.strength"
+       (ngModelChange)="applyChange(mapEffects.eyeDomeLighting.strength=$event)"
+>
+
+<h5>Anti-aliasing Effect</h5>
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox"  name="enabled"  id="antiAliasing-enabled"
+         [ngModel]="mapEffects.antiAliasing.enabled"
+         (ngModelChange)="applyChange(mapEffects.antiAliasing.enabled=$event)"
+  >
+  <label class="form-check-label" for="antiAliasing-enabled">
+    Enable
+  </label>
+</div>

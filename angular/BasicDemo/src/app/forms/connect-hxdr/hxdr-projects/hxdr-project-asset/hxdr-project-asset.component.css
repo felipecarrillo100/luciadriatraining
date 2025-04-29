@@ -1,0 +1,14 @@
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0 0 0 10px;
+}
+
+li {
+  padding: 2px;
+}
+
+.asset-file {
+  cursor: pointer;
+  white-space: nowrap;
+}

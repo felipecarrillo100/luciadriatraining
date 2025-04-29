@@ -1,0 +1,87 @@
+.side-panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #2f2c2c;
+  width: 360px;
+  z-index: 10;
+  color: white;
+  padding: 0;
+  border-radius: 3px;
+  border: 1px solid #675b5b;
+}
+
+.side-panel.left {
+  left: -9999px;
+  transition: left 1s ease 0s;
+}
+.side-panel.visible.left {
+  left: 0px;
+  transition: left 125ms ease 0s;
+}
+
+.side-panel-content {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.side-panel .close-button {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  z-index: 1;
+  border: none;
+  outline: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+}
+
+.side-panel .close-button:hover {
+  color: #e1d2d2;
+}
+
+:host ::ng-deep header {
+  height: 32px;
+  background-color: #00668b;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-left: 10px;
+}
+
+:host ::ng-deep header h2 {
+  margin: 5px;
+  font-size: 18px;
+}
+
+:host ::ng-deep section {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+:host ::ng-deep section .align-right-buttons {
+  margin: 5px;
+  display: block;
+  text-align: right;
+}
+
+:host ::ng-deep section  .nav-link.active {
+  background-color: #2f2c2c;
+  border-color: #dee2e6 #dee2e6 #fff;
+  border-bottom: none;
+}
+
+:host ::ng-deep section .nav-tabs>li {
+  margin-bottom: -2px;
+}
+
+

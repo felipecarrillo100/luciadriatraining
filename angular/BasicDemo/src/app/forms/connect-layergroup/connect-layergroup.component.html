@@ -1,0 +1,18 @@
+<header>
+  <h2>Layer group</h2>
+</header>
+<section>
+  <form (submit)="submit($event)">
+
+    <div class="form-group">
+      <label>Label:</label>
+      <input class="form-control" type="text" [(ngModel)]="label" name="label" />
+    </div>
+
+
+    <div class="align-right-buttons">
+      <button class="btn btn-primary" type="submit">Add Layer</button>
+    </div>
+
+  </form>
+</section>

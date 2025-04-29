@@ -1,0 +1,41 @@
+<header>
+  <h2>Lightning Settings</h2>
+</header>
+<section>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': currenttab==='Sunlight'}" (click)="setTab('Sunlight')">Sunlight</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': currenttab==='AmbientLight'}" (click)="setTab('AmbientLight')" >Ambient Light</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': currenttab==='Atmosphere'}" (click)="setTab('Atmosphere')" >Atmosphere</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': currenttab==='More'}" (click)="setTab('More')" >More...</a>
+    </li>
+  </ul>
+
+  <div [ngSwitch] = 'currenttab'>
+    <div *ngSwitchCase="'Sunlight'">
+      <app-sunlight [mapEffects]="editableSettings" (changeSettings)="settingChanged()"/>
+    </div>
+    <div *ngSwitchCase="'AmbientLight'">
+      <app-ambient-light [mapEffects]="editableSettings" (changeSettings)="settingChanged()"/>
+    </div>
+    <div *ngSwitchCase="'Atmosphere'">
+      <app-atmosphere [mapEffects]="editableSettings" (changeSettings)="settingChanged()"/>
+    </div>
+    <div *ngSwitchCase="'More'">
+      <app-more [mapEffects]="editableSettings" (changeSettings)="settingChanged()"/>
+    </div>
+  </div>
+  <hr>
+  <div class="align-right-buttons">
+    <button class="btn btn-primary" type="button" style="margin-right: 10px" (click)="onRestore()">Set Defaults</button>
+    <button class="btn btn-primary" type="button" style="margin-right: 10px" (click)="onCancel()">Cancel</button>
+    <button class="btn btn-primary" type="button" (click)="onOK()">Apply</button>
+  </div>
+
+</section>

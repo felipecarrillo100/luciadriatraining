@@ -1,0 +1,50 @@
+<header>
+  <h2>Connect to WFS</h2>
+</header>
+<section>
+  <form (submit)="submit($event)">
+    <div class="form-group">
+      <label>Url:</label>
+      <input class="form-control" type="text" [(ngModel)]="url" name="url" />
+    </div>
+
+    <div class="align-right-buttons" >
+      <div style="float: right; width: 100%;">
+        <button class="btn btn-primary" type="button" (click)="getLayers()">Get Layers</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Label:</label>
+      <input class="form-control" type="text" [(ngModel)]="label" name="label" />
+    </div>
+
+    <div class="form-group">
+      <label>Select layers:</label>
+      <select class="form-control" type="text" [(ngModel)]="name" name="name"  size="10"
+              (ngModelChange)="setCurrentLayer($event)"  >
+        <option *ngFor="let l of featureTypes" [value]="l.name">{{l.title}}</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Format:</label>
+      <select class="form-control" type="text" [(ngModel)]="format" name="format" readonly="true" disabled="true">
+        <option *ngFor="let f of formats" [value]="f">{{f}}</option>
+      </select>
+    </div>
+
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="" name="autoZoom" [(ngModel)]="autoZoom" id="autoZoom-checkbox-id">
+      <label class="form-check-label" for="autoZoom-checkbox-id">
+        Auto-zoom
+      </label>
+    </div>
+
+    <div class="align-right-buttons">
+      <button class="btn btn-primary" type="submit">Add Layer</button>
+    </div>
+
+  </form>
+
+</section>

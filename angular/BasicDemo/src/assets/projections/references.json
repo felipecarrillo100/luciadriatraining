@@ -1,0 +1,12 @@
+[
+  {
+    "authorityName": "EPSG",
+    "authorityCode": "4087",
+    "wkt": "PROJCS[\"WGS 84 / World Equidistant Cylindrical\",GEOGCS[\"WGS 84\",DATUM[\"World Geodetic System 1984\",SPHEROID[\"WGS 84\",6378137.0,298.257223563],TOWGS84[0.0,0.0,0.0]],PRIMEM[\"Greenwich\",0.0],UNIT[\"degree\",0.017453292519943295],AXIS[\"Geodetic latitude\",NORTH],AXIS[\"Geodetic longitude\",EAST]],PROJECTION[\"Equidistant Cylindrical\"],PARAMETER[\"Latitude of 1st standard parallel\",0.0],PARAMETER[\"Longitude of natural origin\",0.0],PARAMETER[\"False easting\",0.0],PARAMETER[\"False northing\",0.0],UNIT[\"Meter\",1.0],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]"
+  },
+  {
+    "authorityName": "EPSG",
+    "authorityCode": "25832",
+    "wkt": "PROJCS[\"ETRS89 / UTM zone 32N\",GEOGCS[\"ETRS89\",DATUM[\"European Terrestrial Reference System 1989\",SPHEROID[\"GRS 1980\",6378137.0,298.257222101],TOWGS84[0.0,0.0,0.0]],PRIMEM[\"Greenwich\",0.0],UNIT[\"degree\",0.017453292519943295],AXIS[\"Geodetic latitude\",NORTH],AXIS[\"Geodetic longitude\",EAST],AUTHORITY[\"EPSG\",4258]],PROJECTION[\"Transverse Mercator\"],PARAMETER[\"Latitude of natural origin\",0.0],PARAMETER[\"central_meridian\",9.0],PARAMETER[\"Scale factor at natural origin\",0.9996],PARAMETER[\"False easting\",500000.0],PARAMETER[\"False northing\",0.0],UNIT[\"Meter\",1.0],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",25832]]"
+  }
+]

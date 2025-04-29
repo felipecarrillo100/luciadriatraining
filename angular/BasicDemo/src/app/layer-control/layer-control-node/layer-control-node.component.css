@@ -1,0 +1,77 @@
+
+ul{
+  list-style-type: none;
+  padding-left: 15px;
+}
+
+li {
+  margin:0;
+  padding: 0;
+  display: block;
+}
+
+.layer-control-node {
+  width: 100%;
+  background-color: #1f1d1d;
+  line-height: 26px;
+  height: 28px;
+  display: inline-block;
+  color: white;
+  font-size: 14px;
+  font-family: "Segoe UI", sans-serif;
+  margin: 0px;
+  position: relative;
+}
+
+.layer-control-node-content {
+  padding: 0;
+  padding-left: 5px;
+}
+
+.layer-control-node .layer-control-buttons {
+  position: absolute;
+  top:0;
+  bottom: 0;
+  right: 0;
+  width: 70px;
+  padding-left: 6px;
+  background-color: #1f1d1d;
+}
+
+.layer-control-node button {
+  position: relative;
+  padding: 0px;
+  margin: 2px;
+  font-size: 1.2em;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: white;
+  mix-blend-mode: screen;
+  width: 16px;
+}
+
+.layer-control-node button:hover {
+  color: #c5b1b1;
+}
+
+.layer-control-node button:active {
+  color: #ad9090;
+}
+
+.layer-control-node-content.drag-start{
+  opacity: 0.25;
+  color: #ffffff;
+}
+
+.layer-control-node-content.drag-above:not(.drag-start){
+  background-color: lightgray;
+  border-top: 2px solid #e600ff;
+  color: black;
+}
+
+.layer-control-node-content.drag-below:not(.drag-start){
+  background-color: lightgray;
+  border-bottom: 2px solid #e600ff;
+  color: black;
+}

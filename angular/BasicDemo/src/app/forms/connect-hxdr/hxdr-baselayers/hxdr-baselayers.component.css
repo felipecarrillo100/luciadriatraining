@@ -1,0 +1,14 @@
+.table>tbody>tr.active>td {
+  background-color: #0a53be;
+  color: white;
+}
+
+.table-hover>tbody>tr:hover {
+  background-color: #3479de;
+  color: white;
+}
+
+.label-for-box {
+  padding-top: 10px;
+  display: block;
+}

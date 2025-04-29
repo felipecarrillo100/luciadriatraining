@@ -1,0 +1,19 @@
+<div class="layer-control">
+  <div class="header">
+    <fa-icon [icon]="['fas', 'layer-group']"></fa-icon>
+    Layer Control
+    <div class="toggleExpanded" (click)="toggleExpanded()">
+      <fa-icon *ngIf="expanded" [icon]="['fas', 'chevron-up']" />
+      <fa-icon *ngIf="!expanded" [icon]="['fas', 'chevron-down']" />
+    </div>
+  </div>
+  <div *ngIf="expanded" class="body">
+    <div>
+      <ul>
+        <li *ngFor="let node of (root ? root.children.slice().reverse()  : [])">
+          <app-layer-control-node [map]="map" [node]="node" [groupState]="groupState" ></app-layer-control-node>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

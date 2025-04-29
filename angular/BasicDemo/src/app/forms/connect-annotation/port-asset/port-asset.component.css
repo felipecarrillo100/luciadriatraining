@@ -1,0 +1,17 @@
+.card-footer {
+  padding-top: 2px;
+  border-top: 1px solid #2E3748;
+}
+
+.imageThumbnail {
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+  -webkit-filter: opacity(.80);
+  filter: opacity(.80);
+}
+
+.imageThumbnail:hover {
+  -webkit-filter: opacity(1);
+  filter: opacity(1);
+}

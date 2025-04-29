@@ -1,0 +1,42 @@
+<h4>Atmosphere settings</h4>
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox"  name="enabled"  id="atmosphere-enabled"
+         [ngModel]="mapEffects.atmosphere.enabled"
+         (ngModelChange)="applyChange(mapEffects.atmosphere.enabled=$event)"
+  >
+  <label class="form-check-label" for="atmosphere-enabled">
+    Enable
+  </label>
+</div>
+
+<label for="brightness-id" class="form-label">Brightness: {{mapEffects.atmosphere.brightness}}</label>
+<input id="brightness-id" type="range" class="form-range"  [min]="0" [max]="6" step="0.1"
+       [ngModel]="mapEffects.atmosphere.brightness"
+       (ngModelChange)="applyChange(mapEffects.atmosphere.brightness=$event)"
+>
+
+<label for="Rayleigh-id" class="form-label">Rayleigh Scattering Factor: {{mapEffects.atmosphere.rayleighScatteringFactor}}</label>
+<input id="Rayleigh-id" type="range" class="form-range"  [min]="0" [max]="5" step="0.1"
+       [ngModel]="mapEffects.atmosphere.rayleighScatteringFactor"
+       (ngModelChange)="applyChange(mapEffects.atmosphere.rayleighScatteringFactor=$event)"
+>
+
+
+<label for="Mie-id" class="form-label">Mie Scattering Factor: {{mapEffects.atmosphere.mieScatteringFactor}}</label>
+<input id="Mie-id" type="range" class="form-range" [min]="1" [max]="3" step="0.1"
+       [ngModel]="mapEffects.atmosphere.mieScatteringFactor"
+       (ngModelChange)="applyChange(mapEffects.atmosphere.mieScatteringFactor=$event)"
+>
+
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox"  name="enabled"  id="affectsTerrain"
+         [ngModel]="mapEffects.atmosphere.affectsTerrain"
+         (ngModelChange)="applyChange(mapEffects.atmosphere.affectsTerrain=$event)"
+  >
+  <label class="form-check-label" for="affectsTerrain">
+    Affects terrain
+  </label>
+</div>
+

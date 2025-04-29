@@ -1,0 +1,20 @@
+.dropdown-menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown-menu li {
+
+}
+
+.dropdown-menu li .search-match {
+  padding-left: 10px;
+  cursor: pointer;
+  color: #0a53be;
+}
+
+.dropdown-menu li .search-match:hover {
+  background-color: #0a53be;
+  color: white !important;
+}

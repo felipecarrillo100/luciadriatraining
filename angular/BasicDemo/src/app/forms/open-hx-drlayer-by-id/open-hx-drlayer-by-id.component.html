@@ -1,0 +1,38 @@
+<header>
+  <h2>Open ID</h2>
+</header>
+<section>
+  <button class="btn btn-primary" (click)="addNew()">Add point</button>
+  <form (ngSubmit)="submitNew()" *ngIf="mode==='editing'" >
+      <div class="form-group">
+        <label class="form-label">Name:</label>
+        <input type="text" class="form-control" [(ngModel)]="name" name="name"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description:</label>
+        <input type="text" class="form-control" [(ngModel)]="description" name="description"/>
+      </div>
+    <div class="form-group">
+      <label class="form-label">Name:</label>
+      <input type="text" class="form-control" [(ngModel)]="image" name="image"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description:</label>
+      <input type="text" class="form-control" [(ngModel)]="icon" name="icon"/>
+    </div>
+      <button class="btn-primary btn-sm" type="button" (click)="editStop()">Cancel</button>
+      <button class="btn-primary btn-sm" type="submit">OK</button>
+  </form>
+  <hr/>
+  <ul *ngIf="mode==='view'">
+    <li *ngFor="let poi of pois">
+      <div>
+        <h4>{{poi.properties.name}}</h4>
+        <p>{{poi.properties.description}}</p>
+        <img class="imageThumbnail" [src]="poi.properties.image">
+        <button type="button" class="btn-primary btn-sm" (click)="editItem(poi)">Edit</button>
+        <button type="button" class="btn-primary btn-sm" (click)="showHxDRAsset(poi)">Go to</button>
+      </div>
+    </li>
+  </ul>
+</section>

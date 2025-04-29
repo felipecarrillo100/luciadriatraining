@@ -1,0 +1,45 @@
+<div class="layer-control-node" *ngIf="node"
+
+>
+  <div class="layer-control-node-content"
+       draggable="true"
+       (dragstart)="handleDragStart($event)"
+       (dragend)="handleDragEnd($event)"
+       (drag)="handleDrag($event)"
+       (dragover)="handleDragOver($event)"
+       (dragenter)="handleDragEnterLeave($event)"
+       (dragleave)="handleDragEnterLeave($event)"
+       (drop)="handleOverDrop($event)"
+       (contextmenu)="contextmenu($event)"
+       (dblclick)="fitToLayer(node)"
+       [title]="hintProvider(node)"
+  >
+    <button (click)="toggleCollaped(node)">
+      <fa-icon *ngIf="node.type!==LayerTypesEnum.LayerGroup" [icon]="['fas', iconProvider(node)]"></fa-icon>
+      <fa-icon *ngIf="node.type===LayerTypesEnum.LayerGroup && (node.properties.collapsed)" [icon]="['fas', 'folder']"></fa-icon>
+      <fa-icon *ngIf="node.type===LayerTypesEnum.LayerGroup && (!node.properties.collapsed)" [icon]="['fas', 'folder-open']"></fa-icon>
+    </button>
+    {{node.label}}
+  </div>
+  <div class="layer-control-buttons">
+<!--    <button (click)="deleteLayer(node)">-->
+<!--      <fa-icon [icon]="['fas', 'trash']" ></fa-icon>-->
+<!--    </button>-->
+    <button (click)="contextmenu($event)">
+      <fa-icon [icon]="['fas', 'ellipsis-vertical']" ></fa-icon>
+    </button>
+    <button (click)="fitToLayer(node)">
+      <fa-icon [icon]="['fas', 'expand']" ></fa-icon>
+    </button>
+    <button (click)="toggleNodeVisibility(node)">
+      <fa-icon *ngIf="node.properties.visible" [icon]="['fas', 'eye']" ></fa-icon>
+      <fa-icon *ngIf="!node.properties.visible" [icon]="['fas', 'eye-slash']" ></fa-icon>
+    </button>
+  </div>
+</div>
+<ul *ngIf="node && node.children && node.children.length>0 && (!node.properties.collapsed)">
+  <li *ngFor="let child of (node ? node.children.slice().reverse() : [])">
+    <app-layer-control-node [map]="map" [node]="child" [groupState]="groupState" ></app-layer-control-node>
+  </li>
+</ul>
+

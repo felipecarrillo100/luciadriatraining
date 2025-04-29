@@ -1,0 +1,25 @@
+<ul>
+  <ng-container *ngIf="loading">
+    <li>
+      <fa-icon [icon]="['fas', 'spinner']" />
+      Loading...
+    </li>
+  </ng-container>
+  <ng-container *ngIf="!loading">
+    <li *ngFor="let artifact of artifacts"  >
+      <div class="asset-types"
+           (dblclick)="openLayer(artifact)"
+           (click)="selectAsset(artifact)"
+           [ngClass]="{'active': isCurrent(artifact)}"
+           [title]="artifact.artifactId"
+      >
+        <fa-icon [icon]="['fas', 'external-link']" />
+        {{artifact.type}}
+        <fa-icon [icon]="['fas', 'warning']" *ngIf="!validAsset(artifact)" title="Process Failed"/>
+        <button class="button-download" (click)="downloadAsset(artifact)">
+          <fa-icon *ngIf="artifact.hasDownloadLink" [icon]="['fas', 'download']" />
+        </button>
+      </div>
+    </li>
+  </ng-container>
+</ul>

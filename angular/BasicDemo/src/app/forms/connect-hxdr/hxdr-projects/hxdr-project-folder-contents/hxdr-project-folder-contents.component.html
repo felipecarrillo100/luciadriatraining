@@ -1,0 +1,20 @@
+<ul>
+  <ng-container *ngIf="loading">
+    <li>
+      <fa-icon [icon]="['fas', 'spinner']" />
+      Loading...
+    </li>
+  </ng-container>
+  <ng-container *ngIf="!loading">
+    <app-hxdr-project-folder *ngFor="let folder of contents.folders" [folderId]="folder.id" [folderName]="folder.name" [currentAsset]="currentAsset"
+                             (setCurrentAsset)="setCurrentAsset.emit($event)"
+                             (openAsset)="openAsset.emit($event)"
+    />
+    <app-hxdr-project-asset *ngFor="let asset of contents.assets"
+                            [asset]="asset"
+                            [currentAsset]="currentAsset"
+                            (setCurrentAsset)="setCurrentAsset.emit($event)"
+                            (openAsset)="openAsset.emit($event)"
+    />
+  </ng-container>
+ </ul>

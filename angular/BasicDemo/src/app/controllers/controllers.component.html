@@ -1,0 +1,25 @@
+<div class="button-container">
+  <button [ngClass]="{'active': isCurrentControl('default')}" (click)="setDefaultController()" title="Default">
+    <fa-icon [icon]="['fas', 'arrow-pointer']" size="2x"></fa-icon>
+  </button>
+  <div class="btn-group">
+    <button [ngClass]="{'active': isCurrentMeasureControl(MeasurementType.DISTANCE)}" (click)="setRulerController(MeasurementType.DISTANCE)" title="Distance">
+      <fa-icon [icon]="['fas', 'ruler']" size="2x"></fa-icon>
+    </button>
+    <button [ngClass]="{'active': isCurrentMeasureControl(MeasurementType.ORTHOGONAL)}" (click)="setRulerController(MeasurementType.ORTHOGONAL)" title="Orthogonal">
+      <fa-icon [icon]="['fas', 'ruler-combined']" size="2x"></fa-icon>
+    </button>
+    <button [ngClass]="{'active': isCurrentMeasureControl(MeasurementType.AREA)}" (click)="setRulerController(MeasurementType.AREA)" title="Area">
+      <fa-icon [icon]="['fas', 'draw-polygon']" size="2x"></fa-icon>
+    </button>
+  </div>
+  <button [ngClass]="{'active': isCurrentControl('annotation')}" (click)="setPoiController('damage')" title="Damage">
+    <fa-icon [icon]="['fas', 'heart-crack']" size="2x"></fa-icon>
+  </button>
+  <button [ngClass]="{'active': isCurrentControl('annotation')}" (click)="setPoiController('sensor')" title="Sensor">
+    <fa-icon [icon]="['fas', 'temperature-half']" size="2x"></fa-icon>
+  </button>
+  <button [ngClass]="{'active': isCurrentControl('annotation')}" (click)="setPoiController('document')" title="Document">
+    <fa-icon [icon]="['fas', 'file']" size="2x"></fa-icon>
+  </button>
+</div>

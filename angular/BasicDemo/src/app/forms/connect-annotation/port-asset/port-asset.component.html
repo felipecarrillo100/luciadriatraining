@@ -1,0 +1,45 @@
+<div class="card" style="width: 100%;">
+  <img class="card-img-top imageThumbnail"
+       [src]="asset.properties.image"
+       alt="Card image cap"  (click)="locate()" >
+  <div class="card-body">
+    <h5 class="card-title">
+      <label>Name:</label>
+      <span *ngIf="!editing">{{asset.properties.name}}</span>
+      <input *ngIf="editing" type="text" class="form-control" [(ngModel)]="name" name="name" />
+    </h5>
+    <h6 class="card-subtitle mb-2 text-muted">ID: {{asset.id}}</h6>
+    <div class="card-text">
+      <div *ngIf="editing" >
+        <label>Photo:</label>
+        <input type="text" class="form-control" [(ngModel)]="image" name="image" />
+      </div>
+      <label>Description:</label>
+      <span *ngIf="!editing">{{asset.properties.description}}</span>
+      <input *ngIf="editing" type="text" class="form-control" [(ngModel)]="description" name="description"  />
+    </div>
+  </div>
+  <div class="card-footer text-muted">
+    <div style="text-align: right;">
+      <div *ngIf="editing" >
+        <button class="btn btn-primary btn-sm" (click)="editMode(false)">Cancel</button>
+        <button class="btn btn-primary btn-sm" (click)="editOK(false)">OK</button>
+      </div>
+      <div *ngIf="!editing">
+        <button class="btn btn-primary btn-sm" (click)="editMode(true)" title="Edit properties">Edit</button>
+        <button class="btn btn-primary btn-sm" (click)="replaceShape()" title="Set shape">
+          <fa-icon [icon]="['fas', 'draw-polygon']" ></fa-icon>
+        </button>
+        <button class="btn btn-primary btn-sm" (click)="editShape()" title="Edit shape">
+          <fa-icon [icon]="['fas', 'pen-to-square']" ></fa-icon>
+        </button>
+        <button class="btn btn-primary btn-sm" (click)="delete()" title="Delete asset">
+          <fa-icon [icon]="['fas', 'trash']" ></fa-icon>
+        </button>
+        <button class="btn btn-primary btn-sm" (click)="locate()" title="Locate asset">
+          <fa-icon [icon]="['fas', 'location-dot']" ></fa-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

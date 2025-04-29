@@ -1,0 +1,13 @@
+<li *ngIf="asset">
+  <div (click)="toggleExpanded()" class="asset-file">
+    <fa-icon *ngIf="expanded" [icon]="['fas', 'file']"></fa-icon>
+    <fa-icon *ngIf="!expanded" [icon]="['fas', 'file-alt']"></fa-icon>
+    {{asset.name}}
+    <fa-icon [icon]="['fas', 'warning']" *ngIf="asset.assetStatus!=='ASSET_COMPLETE'" title="Asset incomplete"/>
+  </div>
+  <app-hxdr-project-asset-details *ngIf="expanded" [asset]="asset" [currentAsset]="currentAsset"
+                                  (setCurrentAsset)="setCurrentAsset.emit($event)"
+                                  (openAsset)="openAsset.emit($event)"
+  />
+</li>
+

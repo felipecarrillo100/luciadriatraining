@@ -1,0 +1,28 @@
+<h4>Sunlight settings</h4>
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox"  name="enabled"  id="lightning-enabled"
+         [ngModel]="mapEffects.lightning.enabled"
+         (ngModelChange)="applyChange(mapEffects.lightning.enabled=$event)"
+  >
+  <label class="form-check-label" for="lightning-enabled">
+    Enable
+  </label>
+</div>
+
+<label for="time-id" class="form-label">Time 24 hours {{formatTime(mapEffects.lightning.time)}}</label>
+<input type="range" class="form-range" id="time-id" [min]="minTime" [max]="maxTime" step="1"
+       [ngModel]="mapEffects.lightning.time"
+       (ngModelChange)="applyChange(mapEffects.lightning.time=$event)"
+>
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox"  name="enabled"  id="shadows-enabled"
+         [ngModel]="mapEffects.lightning.shadows"
+         (ngModelChange)="applyChange(mapEffects.lightning.shadows=$event)"
+  >
+  <label class="form-check-label" for="shadows-enabled">
+    Shadows
+  </label>
+</div>
+

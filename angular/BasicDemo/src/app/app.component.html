@@ -1,0 +1,33 @@
+<ngx-json-contextmenu menuClass="my-custom-style" [menuItemTemplate]="mymenuItemTemplate"></ngx-json-contextmenu>
+<ng-template let-menuItem #mymenuItemTemplate>
+  <div [style]="{display:'inline-block'}" [title]="menuItem.title">
+    <div style="display: inline-block; width: 20px; text-align: left;">
+      <fa-icon *ngIf="menuItem.icon" [icon]="['fas', menuItem.icon]"></fa-icon>
+    </div>
+    <div [style]="{display:'inline-block'}">
+      {{menuItem.label}}
+    </div>
+  </div>
+  <input *ngIf="menuItem.checkbox" type="checkbox" [checked]="menuItem.checkbox.value" (checked)="menuItem.action && menuItem.action()" [disabled]="menuItem.disabled">
+</ng-template>
+
+<div *ngIf="authenticated===AuthState.Authenticated">
+  <div class="app-container">
+    <div class="map-container">
+      <app-luciad-map />
+      <app-side-panel [formProvider]="formProvider"/>
+    </div>
+
+    <div class="navbar-container">
+      <app-navbar/>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="authenticated===AuthState.NotAuthenticated">
+  <div class="auth-container">
+    <button class="btn btn-primary" (click)="authenticate()">Click to login</button>
+  </div>
+</div>
+
+

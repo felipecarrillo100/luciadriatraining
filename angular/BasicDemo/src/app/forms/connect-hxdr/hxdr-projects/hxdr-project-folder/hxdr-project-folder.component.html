@@ -1,0 +1,11 @@
+  <li>
+    <div (click)="toggleExpanded()" class="asset-folder">
+      <fa-icon *ngIf="expanded" [icon]="['fas', 'folder-open']" />
+      <fa-icon *ngIf="!expanded" [icon]="['fas', 'folder']" />
+      {{folderName}}
+    </div>
+    <app-hxdr-project-folder-contents *ngIf="expanded" [folderId]="folderId" [currentAsset]="currentAsset"
+                                      (setCurrentAsset)="setCurrentAsset.emit($event)"
+                                      (openAsset)="openAsset.emit($event)"
+    />
+  </li>

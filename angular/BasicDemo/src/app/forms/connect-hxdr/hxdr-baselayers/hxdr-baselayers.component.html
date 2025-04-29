@@ -1,0 +1,38 @@
+<form (submit)="openCurrent($event)">
+<label class="label-for-box">Select base layer:</label>
+
+<table class="table table-hover">
+  <thead>
+  <tr>
+    <th style="width: 85%;">Name</th>
+    <th style="width: 15%;text-align: right;">Type</th>
+  </tr>
+  </thead>
+  <tbody *ngIf="loading">
+  <tr *ngIf="loading">
+    <td colspan="2">
+      <fa-icon [icon]="['fas', 'spinner']" />
+      Loading...
+    </td>
+  </tr>
+  </tbody>
+  <tbody *ngIf="!loading">
+  <tr *ngFor="let item of contents" [title]="item.id" (dblclick)="openLayer(item)" (click)="setCurrentLayer(item)" [ngClass]="{'active': isCurrent(item)}">
+    <td><span>{{item.label}}</span></td>
+    <td style="text-align: right"><a>{{item.type}}</a></td>
+  </tr>
+  </tbody>
+</table>
+
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" value="" name="autoZoom" [(ngModel)]="autoZoom" id="autoZoom-checkbox-id">
+  <label class="form-check-label" for="autoZoom-checkbox-id">
+    Auto-zoom
+  </label>
+</div>
+
+  <div class="align-right-buttons">
+    <button class="btn btn-primary" type="submit">Add Layer</button>
+  </div>
+</form>

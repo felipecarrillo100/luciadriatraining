@@ -1,0 +1,23 @@
+<h4>Ambient light settings</h4>
+
+<div class="form-check">
+  <input class="form-check-input" type="checkbox"  name="enabled"  id="ambientOclusion-enabled"
+         [ngModel]="mapEffects.ambientOclusion.enabled"
+         (ngModelChange)="applyChange(mapEffects.ambientOclusion.enabled=$event)"
+  >
+  <label class="form-check-label" for="ambientOclusion-enabled">
+    Enable
+  </label>
+</div>
+
+<label for="radius-id" class="form-label">Radius: {{mapEffects.ambientOclusion.radius}}</label>
+<input id="radius-id" type="range" class="form-range"  [min]="0" [max]="50" step="1"
+       [ngModel]="mapEffects.ambientOclusion.radius"
+       (ngModelChange)="applyChange(mapEffects.ambientOclusion.radius=$event)"
+>
+
+<label for="power-id" class="form-label">Power: {{mapEffects.ambientOclusion.power}}</label>
+<input id="power-id" type="range" class="form-range"  [min]="0" [max]="2" step="0.1"
+       [ngModel]="mapEffects.ambientOclusion.power"
+       (ngModelChange)="applyChange(mapEffects.ambientOclusion.power=$event)"
+>

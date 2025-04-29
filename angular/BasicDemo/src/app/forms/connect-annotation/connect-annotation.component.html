@@ -1,0 +1,12 @@
+<header>
+  <h2>Port Assets</h2>
+</header>
+<section>
+  <button class="btn btn-primary" (click)="addNew()">Add asset</button>
+  <hr/>
+  <ul>
+    <li *ngFor="let asset of assets">
+      <app-port-asset [asset]="asset" />
+    </li>
+  </ul>
+</section>

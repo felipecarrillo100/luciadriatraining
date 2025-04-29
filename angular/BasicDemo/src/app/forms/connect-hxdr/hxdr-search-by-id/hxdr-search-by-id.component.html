@@ -1,0 +1,32 @@
+<div class="form-group">
+  <label class="form-label" for="assetid">Asset ID:</label>
+  <input id="assetid" class="form-control" type="text" [(ngModel)]="assetId" name="assetId">
+  <input class="form-control" type="text" [value]="asset ? asset.name : '' " readonly="true">
+
+  <div>
+    <ul>
+      <li *ngFor="let artifact of artifacts">
+        <div *ngIf="artifact.dataCategory!=='INTERMEDIATE_RESULT'" class="asset-box">
+          <label>Artifact: {{artifact.dataCategory}}</label>
+          <label>ID: {{artifact.id}}</label>
+          <ul>
+            <li *ngFor="let address of artifact.addresses.contents" >
+              <label>Address: {{address.__typename}}</label>
+              <label>ID: {{address.id}}</label>
+              <label>Consumption Type: {{address.consumptionType}}</label>
+              <label>Service Type: {{translatename(address.serviceType)}}</label>
+              <div *ngIf="address.consumptionType==='STREAMABLE'">
+                <button type="button" class="btn btn-sm btn-primary" (click)="openHxDR(artifact, address)">Open</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="align-right-buttons" >
+    <div style="float: right; width: 100%">
+      <button class="btn btn-primary" type="button" (click)="getAsset()">Get Asset</button>
+    </div>
+  </div>
+</div>

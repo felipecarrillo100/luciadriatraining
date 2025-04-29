@@ -1,0 +1,23 @@
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0 0 0 10px;
+}
+
+li {
+  padding: 2px;
+}
+
+li div.asset-types {
+  cursor: pointer;
+}
+
+li div.asset-types.active {
+  background-color: #0a53be;
+}
+
+li div.asset-types .button-download {
+  background-color: transparent;
+  border: none;
+}
+

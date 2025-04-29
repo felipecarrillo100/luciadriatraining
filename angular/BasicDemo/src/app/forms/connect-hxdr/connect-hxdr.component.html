@@ -1,0 +1,29 @@
+<header>
+  <h2>HxDR</h2>
+</header>
+<section>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': currenttab==='main'}" (click)="setTab('main')">Projects</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': currenttab==='base'}" (click)="setTab('base')" >Base layers</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [ngClass]="{'active': currenttab==='byId'}" (click)="setTab('byId')" >Search</a>
+    </li>
+  </ul>
+
+  <div [ngSwitch] = 'currenttab'>
+    <div *ngSwitchCase="'main'">
+      <app-hxdr-projects />
+    </div>
+    <div *ngSwitchCase="'base'">
+      <app-hxdr-baselayers />
+    </div>
+    <div *ngSwitchCase="'byId'">
+      <app-hxdr-search-by-id />
+    </div>
+  </div>
+
+</section>

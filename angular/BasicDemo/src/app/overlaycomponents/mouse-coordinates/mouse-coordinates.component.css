@@ -1,0 +1,22 @@
+.mouse-coordinates {
+  position: absolute;
+  bottom: 10px;
+  width: fit-content;
+  left: 50%;
+  transform: translate(-50%, 0);
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+  pointer-events: none;
+}
+
+.mouse-coordinates span {
+  color: white;
+  font-family: sans-serif;
+  text-shadow: 0 0 2px #333, 0 0 2px #333, 0 0 1px #333;
+  margin-left: 0px;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 14px;
+  line-height: 14px;
+}

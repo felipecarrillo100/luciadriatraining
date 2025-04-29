@@ -1,0 +1,9 @@
+<div class="attribution">
+  <div *ngFor="let logo of this.logos">
+    <img [alt]="logo" class="attributionLogo" [src]="logo"/>
+  </div>
+  <div class="attribution-strings">
+    <p *ngFor="let str of strings">{{str}}</p>
+    <p>{{this.staticAttributions}}</p>
+  </div>
+</div>

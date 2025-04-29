@@ -1,0 +1,69 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::4326"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "6",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.12574,
+          51.50853,
+          2
+        ]
+      },
+      "properties": {
+        "orientation": 0,
+        "tileStructure": {
+          "tileWidth": 1280,
+          "tileHeight": 640
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "7",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.12574,
+          51.50858,
+          2
+        ]
+      },
+      "properties": {
+        "orientation": 0,
+        "tileStructure": {
+          "tileWidth": 1680,
+          "tileHeight": 840
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "0",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.12574,
+          51.5087,
+          2
+        ]
+      },
+      "properties": {
+        "orientation": 0,
+        "type": "cubemap",
+        "tileStructure": {
+          "tileWidth": 4096,
+          "tileHeight": 4096
+        }
+      }
+    }
+  ]
+}

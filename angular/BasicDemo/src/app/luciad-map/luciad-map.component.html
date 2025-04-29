@@ -1,0 +1,12 @@
+<div class="LuciadMapContainer">
+  <div #luciadMapContainer class="LuciadMap" ></div>
+  <div class="CenterButtons">
+    <button class="btn btn-primary" *ngIf="panoramaModeEnabled" (click)="closePanorama()">Close Panoramic</button>
+  </div>
+  <app-tiles-attribution [map]="map" />
+  <app-mouse-coordinates [map]="map"/>
+  <app-scale-indicator [map]="map"/>
+  <app-compass-button [map]="map"/>
+  <app-layer-control [map]="map" />
+  <app-controllers [map]="map" />
+</div>

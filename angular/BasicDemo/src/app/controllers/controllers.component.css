@@ -1,0 +1,58 @@
+.button-container {
+  position: absolute;
+  bottom: 120px;
+  right: 10px;
+  max-width: 40px;
+  display: block;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+.button-container button {
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 5px 5px;
+  cursor: pointer;
+  color: white;
+  line-height: 12px;
+  width: 40px;
+  background-color: rgba(0,0,0,0.25);
+}
+
+.button-container button:hover {
+  color: #decfcf;
+}
+
+.button-container button:active {
+  color: white;
+}
+
+.button-container button.active {
+  color: #0a53be;
+}
+
+.button-container .btn-group {
+  border: none;
+  box-sizing: content-box;
+  width:40px;
+  float: right;
+  color: white; /* White text */
+  padding: 0; /* Some padding */
+  margin: 0;
+  height: 40px;
+  overflow: hidden;
+}
+
+.button-container .btn-group button{
+  float: right;
+}
+
+.button-container .btn-group:hover {
+  width:120px;
+  transition: width 100ms;
+}
+
+.button-container .btn-group:has(button.active) button:not(.active){
+  display: none;
+}
