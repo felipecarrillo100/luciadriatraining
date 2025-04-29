@@ -210,6 +210,8 @@ export class FeatureLayerStoreService {
     });
   }
 
+
+
   public getModel(): FeatureModel | null {
     return this.subjectModel.value;
   }
@@ -217,6 +219,10 @@ export class FeatureLayerStoreService {
   // Called when the entire model is replaced
   public onModelChange(): Observable<FeatureModel | null> {
     return this.subjectModel.asObservable();
+  }
+
+  public onContentChanged() {
+    return this.subjectContentChange.asObservable()
   }
 
   // This is a hook that is triggered whenever a feature is clicked

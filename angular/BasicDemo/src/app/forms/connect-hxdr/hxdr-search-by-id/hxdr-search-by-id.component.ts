@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {Apollo} from "apollo-angular";
 import {UICommandsService} from "../../../services/uicommands.service";
-import {HxDRGetAssetDetailsNew} from "../../../graphql/graphql.queries";
+import {HxDrGetAssetDetailsV2} from "../../../graphql/graphql.queries";
 import {CreateHxDRLayerFromProjectAssetCommand, LayerInfoHxDR} from "../../utils/CreateHxDRLayerCommand";
 import {LayeerTypeTranslate} from "../../utils/HcDRLayerInterfaces";
 import {UICommand} from "../../../services/interfaces/UICommand";
@@ -42,14 +42,14 @@ export class HxdrSearchByIdComponent {
 
   getAsset() {
     this.apollo.query<any>({
-      query: HxDRGetAssetDetailsNew,
+      query: HxDrGetAssetDetailsV2,
       variables: {
         id: this.assetId,
       },
       fetchPolicy: "network-only"
     }).subscribe((response) => {
       this.asset = response.data.asset;
-      this.artifacts = this.asset.asset.artifacts.contents;
+      this.artifacts = this.asset.asset.artifactsV2.contents;
       console.log(this.artifacts);
     },error => {
       console.error(error);

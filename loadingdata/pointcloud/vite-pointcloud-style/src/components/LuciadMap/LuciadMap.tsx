@@ -15,6 +15,8 @@ import {
     pointParameter,
     positionAttribute
 } from "@luciad/ria/util/expression/ExpressionFactory.js";
+
+import * as ExpressionFactory from "@luciad/ria/util/expression/ExpressionFactory.js";
 import {PointCloudStyle} from "@luciad/ria/view/style/PointCloudStyle.js";
 import {ScalingMode} from "@luciad/ria/view/style/ScalingMode.js";
 import {Bounds} from "@luciad/ria/shape/Bounds.js";
@@ -49,6 +51,8 @@ interface RangeWithExpressions {
     focusPoint_EPSG_4979: Point;
     minParameter: ParameterExpression<number>;
     maxParameter: ParameterExpression<number>;
+    minParameterVisibility: ParameterExpression<number>;
+    maxParameterVisibility: ParameterExpression<number>;
 }
 
 export const LuciadMap: React.FC = () => {
@@ -57,6 +61,7 @@ export const LuciadMap: React.FC = () => {
     const pointCloudStyle = useRef(null as null |  PointCloudStyle);
     const [rangeWithExpressions, setRangeWithExpressions] = useState(null as null |  RangeWithExpressions);
     const [sliderValues, setSliderValues] = useState({min:-10, max: 10});
+    const [sliderVisibilityValues, setSliderVisibilityValues] = useState({min:-10, max: 10});
 
     useEffect(()=>{
         // Initialize Map
@@ -71,9 +76,14 @@ export const LuciadMap: React.FC = () => {
                 const oneTenth = (result.range.ellipsoidHeight.max - result.range.ellipsoidHeight.min)/100;
                 const min = result.range.ellipsoidHeight.min + oneTenth * 50;
                 const max = result.range.ellipsoidHeight.min + oneTenth * 55;
-                setSliderValues({min, max})
+                setSliderValues({min, max});
+                setSliderVisibilityValues({min, max});
                 result.range.minParameter.value = calculateDistanceToEarthCenter(result.range.focusPoint_EPSG_4979, min);
                 result.range.maxParameter.value = calculateDistanceToEarthCenter(result.range.focusPoint_EPSG_4979, max);
+
+                result.range.minParameterVisibility.value = calculateDistanceToEarthCenter(result.range.focusPoint_EPSG_4979, min);
+                result.range.maxParameterVisibility.value = calculateDistanceToEarthCenter(result.range.focusPoint_EPSG_4979, max);
+
                 hspcLayer.pointCloudStyle = pointCloudStyle.current;
             });
         }
@@ -106,9 +116,21 @@ export const LuciadMap: React.FC = () => {
         }
     }, 1000, {trailing: false} );
 
-    const update = (value: number[])=>{
+    const throttleUpdateVisibility = throttle((value: number[])=>{
+        if (rangeWithExpressions) {
+            rangeWithExpressions.minParameterVisibility.value = calculateDistanceToEarthCenter(rangeWithExpressions.focusPoint_EPSG_4979, value[0]);
+            rangeWithExpressions.maxParameterVisibility.value = calculateDistanceToEarthCenter(rangeWithExpressions.focusPoint_EPSG_4979, value[1]);
+        }
+    }, 1000, {trailing: false} );
+
+    const updateColorExpression = (value: number[])=>{
         setSliderValues({min:value[0], max: value[1]});
         throttleUpdate(value);
+    }
+
+    const updateVisibility = (value: number[])=>{
+        setSliderVisibilityValues({min:value[0], max: value[1]});
+        throttleUpdateVisibility(value);
     }
 
     return (<div className="LuciadMap" >
@@ -121,8 +143,19 @@ export const LuciadMap: React.FC = () => {
                 <CustomRange
                     min={rangeWithExpressions.ellipsoidHeight.min}
                     max={rangeWithExpressions.ellipsoidHeight.max}
-                    onChange={update}
+                    onChange={updateColorExpression}
                     values={[sliderValues.min, sliderValues.max]}
+                    step={0.01}
+                />
+            }
+        </div>
+        <div className="vertical-slider-2">
+            { rangeWithExpressions &&
+                <CustomRange
+                    min={rangeWithExpressions.ellipsoidHeight.min}
+                    max={rangeWithExpressions.ellipsoidHeight.max}
+                    onChange={updateVisibility}
+                    values={[sliderVisibilityValues.min, sliderVisibilityValues.max]}
                     step={0.01}
                 />
             }
@@ -149,8 +182,8 @@ function LoadWMS(map: WebGLMap) {
 
 // Adding a HSPC Layer
 function LoadHSPCLayer(map: WebGLMap) {
-    // const url = "https://datamonster.myvr.net/mMap/data/pointcloud/APR/SanFrancisco/tree.hspc";
-    const url = "https://demo.luciad.com/PortAIDemo/hspc/limerick/tree.hspc";
+    const url = "https://datamonster.myvr.net/mMap/data/pointcloud/APR/SanFrancisco/tree.hspc";
+    // const url = "https://demo.luciad.com/PortAIDemo/hspc/limerick/tree.hspc";
 
     return new Promise<TileSet3DLayer>((resolve)=>{
         // Create the model
@@ -160,6 +193,8 @@ function LoadHSPCLayer(map: WebGLMap) {
                 label: "HSPC Layer",
                 id: TargetHSPCLayerID
             });
+
+            console.log(model.modelDescriptor.properties);
 
             //Add the model to the map
             map.layerTree.addChild(layer);
@@ -182,6 +217,9 @@ function createPointStyle(bounds: Bounds): {
     const minParameter = numberParameter(calculateDistanceToEarthCenter(focusPoint, ellipsoidHeightBounds.min));
     const maxParameter = numberParameter(calculateDistanceToEarthCenter(focusPoint, ellipsoidHeightBounds.max));
 
+    const minParameterVisibility = numberParameter(calculateDistanceToEarthCenter(focusPoint, ellipsoidHeightBounds.min));
+    const maxParameterVisibility = numberParameter(calculateDistanceToEarthCenter(focusPoint, ellipsoidHeightBounds.max));
+
     // Uses absolute position of the point as value to evaluate in the expressions
     const position = positionAttribute();
     const earthCenter = pointParameter({x: 0, y: 0, z: 0});
@@ -194,13 +232,17 @@ function createPointStyle(bounds: Bounds): {
 
     return {
         pointCloudStyle: {
-            // gapFill: 3,   // Too heavy style for Intel Integrated Graphic cards
+           //  gapFill: 3,   // Too heavy style for Intel Integrated Graphic cards
             pointSize: {
                 mode: ScalingMode.ADAPTIVE_WORLD_SIZE,
                 minimumPixelSize: 2,
                 worldScale: 1
             },
-            colorExpression: mixmap(heightFraction, colorMix)
+            colorExpression: mixmap(heightFraction, colorMix),
+            visibilityExpression: ExpressionFactory.and(
+                ExpressionFactory.lt(minParameterVisibility, distanceToCenter),
+                ExpressionFactory.gt(maxParameterVisibility, distanceToCenter)
+            )
         },
         range: {
             focusPoint_EPSG_4979: focusPoint,
@@ -209,7 +251,9 @@ function createPointStyle(bounds: Bounds): {
                 max: ellipsoidHeightBounds.max,
             },
             minParameter,
-            maxParameter
+            maxParameter,
+            minParameterVisibility,
+            maxParameterVisibility
         }
     }
 }

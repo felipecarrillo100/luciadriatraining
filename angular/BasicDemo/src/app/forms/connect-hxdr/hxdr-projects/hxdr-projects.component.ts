@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import {Apollo} from "apollo-angular";
-import {GetProjects} from "../../../graphql/graphql.queries";
+import {GetProjectsV2} from "../../../graphql/graphql.queries";
 import {Subscription} from "rxjs";
 import {
   CreateHxDRLayerCommand,
   CreateHxDRLayerFromProjectAssetCommand,
-  FindHxDRAssetEndPoint,
   LayerInfoHxDR
 } from "../../utils/CreateHxDRLayerCommand";
 import {UICommandsService} from "../../../services/uicommands.service";
@@ -56,7 +55,7 @@ export class HxdrProjectsComponent {
     this.loading = true;
     this.failedToConnect = false;
     this.subscription = this.apollo.watchQuery<any>({
-      query: GetProjects,
+      query: GetProjectsV2,
       variables: {
         pageSize: this.pageSize,
         pageNumber: this.pagination - 1,
@@ -66,8 +65,8 @@ export class HxdrProjectsComponent {
       fetchPolicy: "network-only"
     }).valueChanges.subscribe((response) => {
       this.loading = false;
-      this.projects = response.data.getProjects.contents as Project[];
-      const total = (response.data && response.data.getProjects) ? response.data.getProjects.total : 0;
+      this.projects = response.data.projectsV2.contents as Project[];
+      const total = (response.data && response.data.projectsV2) ? response.data.projectsV2.total : 0;
       this.allProjects = total;
     },error => {
       this.failedToConnect = true;

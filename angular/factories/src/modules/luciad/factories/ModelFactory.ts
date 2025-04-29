@@ -2,6 +2,8 @@ import {HttpRequestOptions} from '@luciad/ria/util/HttpRequestOptions.js';
 import {HSPCTilesModel} from '@luciad/ria/model/tileset/HSPCTilesModel.js';
 import {OGC3DTilesModel} from '@luciad/ria/model/tileset/OGC3DTilesModel.js';
 import {WMSTileSetModel} from '@luciad/ria/model/tileset/WMSTileSetModel.js';
+import {FeatureModel} from '@luciad/ria/model/feature/FeatureModel.js';
+import {WFSFeatureStore} from '@luciad/ria/model/store/WFSFeatureStore.js';
 
 export class ModelFactory {
 
@@ -25,11 +27,10 @@ export class ModelFactory {
           } else {
             reject(null);
           }
-        },
-        () => {
+        }
+      ).catch(()=>{
           reject();
-        },
-      );
+      });
     });
   }
 
@@ -46,6 +47,18 @@ export class ModelFactory {
         .catch((e) => {
           reject(e);
         });
+    });
+  }
+
+  public static createWFSModel(wfsSettings: any) {
+    return new Promise<FeatureModel>((resolve, reject) => {
+      // Adds a WMS layer as a background
+      WFSFeatureStore.createFromURL(wfsSettings.url, wfsSettings.layer, {}).then(async (store: WFSFeatureStore) => {
+        const model = new FeatureModel(store)
+        resolve(model);
+      }).catch(()=>{
+        reject();
+      });
     });
   }
 

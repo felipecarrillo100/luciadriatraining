@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {HxDRGetAssetDetailsNew} from "../../../../graphql/graphql.queries";
+import {HxDrGetAssetDetailsV2} from "../../../../graphql/graphql.queries";
 import {Apollo} from "apollo-angular";
 import {Subscription} from "rxjs";
 import {ArtifactSimplified, LayerInfoHxDR} from "../../../utils/CreateHxDRLayerCommand";
@@ -34,25 +34,25 @@ export class HxdrProjectAssetDetailsComponent {
   ngOnInit(): void {
     this.loading = true;
     this.subscription = this.apollo.watchQuery<any>({
-      query: HxDRGetAssetDetailsNew,
+      query: HxDrGetAssetDetailsV2,
       variables: {
         id: this.asset?.id
       },
       fetchPolicy: "network-only"
     }).valueChanges.subscribe((response) => {
       this.loading = false;
-      const filteredData = response.data.asset.asset.artifacts.contents.filter((item:any)=>{
+      const filteredData = response.data.asset.asset.artifactsV2.contents.filter((item:any)=>{
         if (!ValidAssetTypeCategories.includes(item.dataCategory)) return false;
-        return item.addresses.contents.some(isValidAssetLayerType);
+        return item.addressesV2.contents.some(isValidAssetLayerType);
       })
       this.artifacts = filteredData.map((item: any)=>{
         let hasDownloadLink = false;
-        if (item.addresses.contents.find((i:any)=>i.consumptionType==="DOWNLOADABLE")){
+        if (item.addressesV2.contents.find((i:any)=>i.consumptionType==="DOWNLOADABLE")){
           hasDownloadLink = true;
         }
         return {
           "type": item.dataCategory,
-          "addresses": item.addresses.contents,
+          "addresses": item.addressesV2.contents,
           hasDownloadLink,
           artifactId: item.id,
         }});
@@ -200,6 +200,6 @@ export class HxdrProjectAssetDetailsComponent {
 
   validAsset(artifact: ArtifactSimplified) {
     const address = artifact.addresses.find((i:any)=>i.consumptionType!=="DOWNLOADABLE");
-    return address.processingPipelineInfo.status !== "FAILED";
+    return address.generatedPipelineArtifactInfo.status !== "FAILED";
   }
 }

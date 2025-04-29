@@ -26,7 +26,12 @@ export class SideBarComponent {
 
   constructor(
     @Inject(FilesStoreService) private readonly fileStoreService: FeatureLayerStoreService,
-    ) {
+  ) {
+
+    this.fileStoreService.onContentChanged().subscribe(()=>{
+      console.log("Model has changed!!!!!")
+    })
+
   }
 
 
@@ -59,6 +64,46 @@ export class SideBarComponent {
       });
     }
     console.log(map)
+  }
+
+  setFilter() {
+    const map = this.mainMapService.getMap();
+    if (map) {
+      this.fileStoreService.setFilter(map, (feature)=>{
+        return Number(feature.id) <5;
+      })
+    }
+  }
+
+  clearFilter() {
+    const map = this.mainMapService.getMap();
+    if (map) {
+      this.fileStoreService.resetFilter(map)
+    }
+  }
+  deleteAll() {
+    const map = this.mainMapService.getMap();
+    if (map) {
+      this.fileStoreService.deleteAll().subscribe();
+    }
+  }
+
+  addOne() {
+    const map = this.mainMapService.getMap();
+    if (map) {
+      const crs84 = getReference("EPSG:4326");
+      const shape = createPoint(crs84, [12,12,0]);
+      const properties =  JSON.parse(JSON.stringify(DocumentProperties))
+      const feature = new Feature(shape, properties, 12);
+      this.fileStoreService.put(feature).subscribe();
+    }
+  }
+
+  deleteOne() {
+    const map = this.mainMapService.getMap();
+    if (map) {
+      this.fileStoreService.delete(12 as any).subscribe();
+    }
   }
 }
 

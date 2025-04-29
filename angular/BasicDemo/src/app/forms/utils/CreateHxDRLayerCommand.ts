@@ -47,7 +47,7 @@ export function FindHxDRAssetEndPoint(apollo: Apollo, layerInfoHxDR: LayerInfoHx
       const contents = response.data.asset.asset.artifactsV2.contents.filter((item:any)=>{
         if (!ValidAssetTypeCategories.includes(item.dataCategory)) return false;
         // @ts-ignore
-        return item.addresses.contents.some((address:any)=>LayeerTypeTranslate[address.serviceType] === layerInfoHxDR.type);
+        return item.addressesV2.contents.some((address:any)=>LayeerTypeTranslate[address.serviceType] === layerInfoHxDR.type);
       });
       if (contents.length>0) {
         const artifact = layerInfoHxDR.artifactId ?
@@ -55,7 +55,7 @@ export function FindHxDRAssetEndPoint(apollo: Apollo, layerInfoHxDR: LayerInfoHx
           contents[0];
         if (artifact) {
           // @ts-ignore
-          const address = artifact.addresses.contents.filter((address:any)=>LayeerTypeTranslate[address.serviceType] === layerInfoHxDR.type);
+          const address = artifact.addressesV2.contents.filter((address:any)=>LayeerTypeTranslate[address.serviceType] === layerInfoHxDR.type);
           if (address.length>0) {
             resolve(address)
             return;

@@ -7,7 +7,8 @@ import {PointCloudPointShape} from '@luciad/ria/view/style/PointCloudPointShape.
 import {ScalingMode} from '@luciad/ria/view/style/ScalingMode.js';
 import {WMSTileSetModel} from '@luciad/ria/model/tileset/WMSTileSetModel.js';
 import {WMSTileSetLayer} from '@luciad/ria/view/tileset/WMSTileSetLayer.js';
-import {FeatureLayerConstructorOptions} from '@luciad/ria/view/feature/FeatureLayer.js';
+import {FeatureLayer, FeatureLayerConstructorOptions} from '@luciad/ria/view/feature/FeatureLayer.js';
+import {FeatureModel} from '@luciad/ria/model/feature/FeatureModel.js';
 
 export class LayerFactory {
 
@@ -86,6 +87,13 @@ export class LayerFactory {
   static async createWMSLayer(model: WMSTileSetModel, layerOptions: FeatureLayerConstructorOptions) {
     return new Promise<WMSTileSetLayer>((resolve) => {
       const layer = new WMSTileSetLayer(model, layerOptions);
+      resolve(layer);
+    });
+  }
+
+  static async createWFSLayer(model: FeatureModel, layerOptions: FeatureLayerConstructorOptions) {
+    return new Promise<FeatureLayer>((resolve) => {
+      const layer = new FeatureLayer(model, layerOptions);
       resolve(layer);
     });
   }

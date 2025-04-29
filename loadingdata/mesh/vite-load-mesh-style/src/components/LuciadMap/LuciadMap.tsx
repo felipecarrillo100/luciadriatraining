@@ -149,8 +149,8 @@ function LoadWMS(map: WebGLMap) {
 
 // Adding a Memory Store
 function LoadMeshLayer(map: WebGLMap) {
-  //  const url = "https://sampledata.luciad.com/data/ogc3dtiles/outback_PBR_Draco/tileset.json";
-    const url = "https://sampleservices.luciad.com/ogc/3dtiles/marseille-mesh/tileset.json";
+    const url = "https://sampledata.luciad.com/data/ogc3dtiles/outback_PBR_Draco/tileset.json";
+  //  const url = "https://sampleservices.luciad.com/ogc/3dtiles/marseille-mesh/tileset.json";
 
     return new Promise<TileSet3DLayer>(resolve=>{
         OGC3DTilesModel.create(url, {}).then((model:OGC3DTilesModel)=>{

@@ -137,8 +137,8 @@ function LoadWMS(map: WebGLMap) {
 
 // Adding a HSPC Layer
 function LoadHSPCLayer(map: WebGLMap) {
-    // const url = "https://datamonster.myvr.net/mMap/data/pointcloud/APR/SanFrancisco/tree.hspc";
-    const url = "https://demo.luciad.com/PortAIDemo/hspc/limerick/tree.hspc";
+    const url = "https://datamonster.myvr.net/mMap/data/pointcloud/APR/SanFrancisco/tree.hspc";
+    // const url = "https://demo.luciad.com/PortAIDemo/hspc/limerick/tree.hspc";
 
     return new Promise<TileSet3DLayer>((resolve) => {
         // Create the model

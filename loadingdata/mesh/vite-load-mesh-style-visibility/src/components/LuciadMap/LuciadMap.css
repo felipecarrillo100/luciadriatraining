@@ -23,6 +23,13 @@
   height: 95%;
 }
 
+.LuciadMap div.vertical-slider-2 {
+  position: absolute;
+  top: 10px;
+  left: 52px;
+  height: 95%;
+}
+
 .LuciadMap div.button-bar button {
   width: 80px;
   font-size: 12px;

@@ -1,17 +1,10 @@
 import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {WebGLMap} from '@luciad/ria/view/WebGLMap.js';
 
-import {Controller} from '@luciad/ria/view/controller/Controller.js';
-
-import GizmoCircles from "ria-toolbox/libs/scene-navigation/gizmo/gizmo_circles.glb";
-import GizmoArrows from "ria-toolbox/libs/scene-navigation/gizmo/gizmo_arrows.glb";
-import GizmoOctahedron from "ria-toolbox/libs/scene-navigation/gizmo/gizmo_octhedron.glb";
 import {ModelFactory} from '../../../modules/luciad/factories/ModelFactory';
 import {LayerFactory} from '../../../modules/luciad/factories/LayerFactory';
 
-console.log(GizmoCircles);
-console.log(GizmoArrows);
-console.log(GizmoOctahedron);
+
 
 @Component({
   selector: 'app-luciad-map',
@@ -27,7 +20,6 @@ export class LuciadMapComponent implements OnInit, OnDestroy {
   private map: WebGLMap | null = null;
 
   // Initialize map
-  private defaultController: Controller | null = null;
   ngOnInit(): void {
     if (this.mapContainer && this.mapContainer.nativeElement !== null) {
       this.map = new WebGLMap(this.mapContainer.nativeElement, {reference: "epsg:4978"});
@@ -50,6 +42,14 @@ export class LuciadMapComponent implements OnInit, OnDestroy {
     })
     const layerWMS = await LayerFactory.createWMSLayer(modelWMS, {
       label: "WMS Layer",
+    });
+
+    const modelWFS = await ModelFactory.createWFSModel({
+      url: "https://sampleservices.luciad.com/wfs",
+      layer: "ns4:t_states__c__1213"
+    })
+    const layerWFS = await LayerFactory.createWFSLayer(modelWFS, {
+      label: "WFS Layer",
     })
 
     const model3DTiles = await ModelFactory.createOgc3DTilesModel({
@@ -60,8 +60,9 @@ export class LuciadMapComponent implements OnInit, OnDestroy {
     })
 
     map.layerTree.addChild(layerWMS);
+    map.layerTree.addChild(layerWFS);
     map.layerTree.addChild(layer3DTiles);
-    map.mapNavigator.fit({bounds: layer3DTiles.bounds});
+    map.mapNavigator.fit({bounds: layer3DTiles.bounds, animate: true});
   }
 
 }
